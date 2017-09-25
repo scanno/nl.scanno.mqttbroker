@@ -1,0 +1,33 @@
+{
+   "id": "nl.scanno.mqttbroker",
+   "name": {
+      "en": "MQTT Broker",
+      "nl": "MQTT Broker"
+   },
+   "description": {
+      "en": "A MQTT Broker for Homey",
+      "nl": "Een MQTT Broker for Homey"
+   },
+   "version": "0.0.1",
+   "sdk": 2,
+   "compatibility": ">=1.5.0",
+   "category": [
+      "internet"
+   ],
+   "author": {
+      "name": "Menno van Grinsven",
+      "email": "mgrinsven@gmail.com"
+   },
+   "contributors": {
+      "developers": [
+         {
+            "name": "Menno van Grinsven",
+            "email": "mgrinsven@gmail.com"
+         }
+      ]
+   },
+   "images":{
+      "large":"./assets/images/large.jpg",
+      "small":"./assets/images/small.jpg"
+   }
+}

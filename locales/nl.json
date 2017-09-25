@@ -1,0 +1,35 @@
+{
+   "settings" : {
+      "app" : {
+         "title" : "MQTT broker instellingen",
+          "server" : {
+             "server_title" : "MQTT broker instellingen",
+             "server_details" : "Voer broker gegevens in",
+             "server_explanation" : "Om de broker te kunnen gebruiken moeten er een aantal gegevens worden ingevuld. Op dit moment hoeft alleen het poort nummer ingevuld te worden. Normaal gesproken kan port 1883 gebruikt worden",
+             "port" : "Poortnummer"
+          },
+          "button" : {
+             "save" : "Opslaan",
+             "getlogs" : "Log ophalen",
+             "purgedata": "Verwijder gegevens",
+             "userArray": "Wijzig gebruikers",
+             "brokerStart" : "Start Broker",
+             "brokerStop" : "Stop Btoker"
+          },
+          "log" : {
+             "title" : "Laatste log regels"
+          },
+          "data": {
+             "data_settings": "Gebruikers gegevens",
+             "data_explanation": "Voer hier de gebruikere met hun ID en wachtwoord op. Gebruik de Verwijder gegevens knop om alle gebruikers te verwijderen.",
+             "data_purge_confirm": "Weet u zeker dat u de gebruikersgegevens wilt verwijderen?"
+          },
+          "messages" : {
+             "unable_set_settings" : "Er is een fout opgetreden tijden het opslaan van de instellingen.",
+             "settings_saved" : "Instellingen opgeslagen",
+             "settings_noSettingsChanged" : "Er zijn geen instellingen aangepast.",
+             "settings_unexpectedError" : "Er is een onverwachte fout opgetreden, probeer het nog eens."
+          }
+      }
+   }
+}

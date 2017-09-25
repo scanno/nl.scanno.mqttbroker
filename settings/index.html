@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- The '/homey.js' script must be included in your settings view to work -->
+        <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+    </head>
+    <body>
+
+        <h1 data-i18n="settings.app.title"></h1>
+        <form id="broker">
+           <fieldset id="serversettings">
+              <legend>
+                 <label data-i18n="settings.app.server.server_details"></label>
+              </legend>
+
+              <p data-i18n="settings.app.server.server_explanation"></p>
+              <div class="field row">
+                 <label class="form_label" for="ip_port" data-i18n="settings.app.server.port"></label>
+                  <br>
+                    <input class="form_input" id="ip_port" type="text" value="1883" /> <br>
+              </div>
+           </fieldset>
+           <fieldset id="serverstatus">
+              <p id="brokerstatus">unkown</p>
+              <button type="button" id="button_brokerstart" onclick="startBroker()" data-i18n="settings.app.button.brokerStart">Start Broker</button>
+              <button type="button" id="button_brokerstart" onclick="stopBroker()" data-i18n="settings.app.button.brokerStop">Stop Broker</button>
+           </fieldset>
+
+        <fieldset id="data_settings">
+            <legend>
+                <label data-i18n="settings.app.data.data_settings"></label>
+            </legend>
+            
+            <p data-i18n="settings.app.data.data_explanation"></p>
+
+            <div>
+               <button type="button" id="button_userTable" onclick="createUserTable()" data-i18n="settings.app.button.userArray">Edit Userdata</button> 
+            </div>
+
+            <fieldset id="edit_data">
+               <table id="userTable"/>
+               </table>
+
+               <div id="data_addRow"></div>
+            </fieldset>
+
+            <button type="button" id="button_purge" onclick="purgeUserData()" data-i18n="settings.app.button.purgedata">Purge Data</button>           
+
+        </fieldset>
+
+
+        </form>
+
+        <div>
+        <button type="button" class="right" id="button_getlog" onclick="showLogLines()" data-i18n="settings.app.button.getlogs">Get Logs</button>
+        <button type="button" class="right" id="button_save" onclick="save()" data-i18n="settings.app.button.save">Save</button>
+        </div>
+
+        <p data-i18n="settings.app.log.title"></p>
+        <div id="loglines"></div>
+
+        <script type="text/javascript">
+
+        var currentValues = {};
+        var HomeyAPI = null;
+
+        function onHomeyReady(Homey){
+           HomeyAPI = Homey;
+
+           Homey.get('ip_port', function(err, ip_port) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('ip_port').value = ip_port;
+                    currentValues.ip_port = ip_port;
+                  }
+           })
+           Homey.ready();
+           createUserTable();
+        }
+
+        function save() {
+            var oldValues = JSON.parse(JSON.stringify(currentValues));
+            console.log(oldValues);
+            var valuesHaveBeenChanged = false;
+
+            if (currentValues.ip_port != document.getElementById('ip_port').value) {
+                console.log("ip_port has been changed");
+                HomeyAPI.set('ip_port', document.getElementById('ip_port').value);
+                valuesHaveBeenChanged = true;
+                currentValues.ip_port = document.getElementById('ip_port').value;
+            }
+
+
+            if (valuesHaveBeenChanged == true) {
+                notifySettings(oldValues);
+                HomeyAPI.alert(__('settings.app.messages.settings_saved'));
+            } else {
+                HomeyAPI.alert(__('settings.app.messages.settings_noSettingsChanged'));
+            }
+        }
+
+        function isEven(n) {
+           return n == parseFloat(n)? !(n%2) : void 0;
+        }
+
+
+        function notifySettings(values) {
+             HomeyAPI.api('POST', 'test/settingschange/', values, function(err, result) {
+                if (!err) {
+                    console.log("Settings change succesfull");
+                } else {
+                    // Oeps, something went wrong here
+                    Homey.alert(__('settings.app.messages.unable_set_settings'));
+                }
+            });
+        }
+
+        function createUserTable() {
+           var table = document.getElementById("userTable");
+           document.getElementById("userTable").style.width = "";
+           var nRows = table.rows.length;
+           if (nRows > 0) {
+              for (var i=0; i < nRows; i++) {
+                 table.deleteRow(-1);
+              }
+           }
+
+           var header = table.createTHead();
+           var rowhead = header.insertRow(0);
+           var cellhead = rowhead.insertCell(0);
+           var cellhead1 = rowhead.insertCell(1);
+           cellhead.innerHTML = "<b>User</b>";
+           cellhead1.innerHTML="<b>Password</b>";
+
+           HomeyAPI.api('GET', 'settings/getUserArray/', function(err, result) {
+              if (!err) {
+                 console.log("UserArray data ok");
+                 for (var i=0; i < result.length; i++) {
+                    console.log("Create row for " + result[i].userName);
+                    var row = table.insertRow(i+1);
+                    if (isEven(table.rows.length)) {
+                       row.style.backgroundColor = "rgb(250,250,250)";
+                    }
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+                    cell1.innerHTML = result[i].userName;
+                    var passwordID = "userPassword" + row.rowIndex;
+                    cell2.innerHTML = '<input class="form_input" id="userPassword" type="password" value="" />';
+                    document.getElementById("userPassword").value = result[i].userPassword;
+                    document.getElementById("userPassword").id = passwordID;
+
+                    cell3.innerHTML = '<button type="button" value="button" onclick="deleteUserRow(this)">-</button>';
+                    cell4.innerHTML = '<button type="button" value="button" onclick="changeUserPassword(this)">#</button>';
+                 }
+              };
+           });
+           var row = table.insertRow(-1);
+           if (isEven(table.rows.length)) {
+              row.style.backgroundColor = "rgb(250,250,250)";
+           }
+           var user = row.insertCell(0);
+           var password = row.insertCell(1);
+           var add = row.insertCell(2);
+           user.innerHTML = '<input class="form_input" id="addUser" type="text" value="" />';
+           password.innerHTML = '<input class="form_input" id="addPassword" type="password" value="" />';
+           add.innerHTML = '<button type="button" value="button" onclick="saveUserRow()">+</button>';
+        }
+
+        function deleteUserRow(element) {
+           var row = element.parentNode.parentNode.rowIndex;
+           var table = document.getElementById("userTable");
+           var userName = table.rows[row].cells[0].innerHTML;
+           console.log("Delete user: "+userName);
+           if (userName !== null && userName !== undefined) {
+              HomeyAPI.api('POST', 'settings/deleteUser/', {"userName": userName}, function(err, result) {
+                 console.log("Data posted");
+                 createUserTable();
+              });
+           }
+        }
+
+        function saveUserRow() {
+           console.log("addRow called");
+           var token;
+           var userName = document.getElementById('addUser').value;
+           var userPassword = document.getElementById('addPassword').value;
+           console.log("User to add: " + userName);
+           if (userName !== null && userName !== undefined && userName !== "") {
+              HomeyAPI.api('POST', 'settings/addNewUser/', {"userName": userName, "userPassword": userPassword}, function(err, result) {
+                 console.log("Data posted");
+                 createUserTable();
+              });
+           }
+        }
+
+        function changeUserPassword(element) {
+           var row = element.parentNode.parentNode.rowIndex;
+           var table = document.getElementById("userTable");
+           var userName = table.rows[row].cells[0].innerHTML;
+           var passwordID = "userPassword" + table.rows[row].rowIndex;
+           console.log("Password ID = "+passwordID);
+           var userPassword = document.getElementById(passwordID).value;
+           if (userName !== null && userName !== undefined) {
+              HomeyAPI.api('POST', 'settings/addNewUser/', {"userName": userName, "userPassword": userPassword}, function(err, result) {
+                 console.log("Data posted");
+                 createUserTable();
+              });
+           }
+        }
+
+        function showLogLines() {
+           HomeyAPI.api('GET', 'settings/getloglines/', function(err, result) {
+              if (!err) {
+                 document.getElementById('loglines').innerHTML = '';
+                 for (var i=0; i < result.length; i++) {
+                    document.getElementById('loglines').innerHTML += result[i];
+                    document.getElementById('loglines').innerHTML += "<br />";
+                 }
+              };
+           });
+        }
+        function startBroker() {
+           HomeyAPI.api('POST', 'settings/startBroker/', null, function(err, result) {
+              console.log("startBroker() called");
+              isBrokerRunning();
+           });
+        }
+        
+        function stopBroker() {
+           HomeyAPI.api('POST', 'settings/stopBroker/', null, function(err, result) {
+              console.log("stopBroker() called");
+              isBrokerRunning();
+           });
+        }
+
+        function isBrokerRunning() {
+           HomeyAPI.api('GET', 'settings/isBrokerRunning/', function(err, result) {
+              if (!err) {
+                 if (result === true) {
+                    document.getElementById('brokerstatus').innerHTML = 'Running';
+                 } else {
+                    document.getElementById('brokerstatus').innerHTML = 'Stopped';
+                 }
+              };
+           });
+        }
+
+        </script>
+
+    </body>
+</html>
+

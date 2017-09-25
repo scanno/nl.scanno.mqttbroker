@@ -1,0 +1,37 @@
+{
+   "settings" : {
+      "app" : {
+         "title" : "MQTT broker settings",
+         "server" : {
+            "server_title" : "MQTT broker setings",
+            "server_details" : "Enter broker details",
+            "server_explanation" : "You need to specify some data for the broker to be able to.run. At the moment you only need to specify the port number. In the future more options will be available",
+            "port" : "Enter port number"
+         },
+         "button" : {
+            "save" : "Save",
+            "getlogs" : "Get logs",
+            "purgedata": "Delete Data",
+            "userArray": "Edit users",
+            "brokerStart" : "Start Broker",
+            "brokerStop" : "Stop Btoker"
+
+         },
+         "log" : {
+            "title" : "Log lines:"
+         },
+          "data": {
+             "data_settings": "User Data",
+             "data_explanation": "Add users with their passwords here. Use the Delete Data button to remove all user data.",
+             "data_purge_confirm": "Are you sure you want to delete all data?"
+          },
+
+         "messages" : {
+            "unable_set_settings" : "There was an error trying to apply the settings.",
+            "settings_saved" : "Settings saved",
+            "settings_noSettingsChanged" : "No setting has been changed",
+            "settings_unexpectedError" : "Unexpected error occured. Please try again"
+         }
+      }
+   }
+}
