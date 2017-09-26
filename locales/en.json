@@ -14,7 +14,7 @@
             "purgedata": "Delete Data",
             "userArray": "Edit users",
             "brokerStart" : "Start Broker",
-            "brokerStop" : "Stop Btoker"
+            "brokerStop" : "Stop Broker"
 
          },
          "log" : {
