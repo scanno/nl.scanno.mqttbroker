@@ -14,7 +14,8 @@
              "purgedata": "Verwijder gegevens",
              "userArray": "Wijzig gebruikers",
              "brokerStart" : "Start Broker",
-             "brokerStop" : "Stop Broker"
+             "brokerStop" : "Stop Broker",
+             "sessionSettings" : "Sessie instellingen"
           },
           "log" : {
              "title" : "Laatste log regels"

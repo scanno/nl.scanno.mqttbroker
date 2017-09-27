@@ -35,6 +35,7 @@
 
             <div>
                <button type="button" id="button_userTable" onclick="createUserTable()" data-i18n="settings.app.button.userArray">Edit Userdata</button> 
+               <button type="button" id="button_sessionSettings" onclick="createSessionSettings()" data-i18n="settings.app.button.sessionSettings">Session settings</button>
             </div>
 
             <fieldset id="edit_data">
@@ -116,6 +117,10 @@
             });
         }
 
+        /*
+           Create the usertable on screen with known user id's and passwords for the
+           userarray fetched from the backend.
+        */
         function createUserTable() {
            var table = document.getElementById("userTable");
            document.getElementById("userTable").style.width = "";
@@ -210,6 +215,50 @@
               });
            }
         }
+
+        /////////////////////////////////////////////////////////
+        // Section for session settings
+        function createSessionSettings() {
+           var table = document.getElementById("userTable");
+           document.getElementById("userTable").style.width = "";
+           var nRows = table.rows.length;
+           if (nRows > 0) {
+              for (var i=0; i < nRows; i++) {
+                 table.deleteRow(-1);
+              }
+           }
+           // create the three input textarea's with description
+           var rowPrivate = table.insertRow(-1);
+           var rowPublic = table.insertRow(-1);
+           var rowCert = table.insertRow(-1);
+
+           var privateCell1 = rowPrivate.insertCell(-1);
+           var privateCell2 = rowPrivate.insertCell(-1);
+           privateCell1.innerHTML="Private Key";
+           privateCell2.innerHTML='<textarea rows="10" cols="50" id="privkey"></textarea>';
+
+           var publicCell1 = rowPublic.insertCell(-1);
+           var publicCell2 = rowPublic.insertCell(-1);
+           publicCell1.innerHTML="Public Key";
+           publicCell2.innerHTML='<textarea rows="10" cols="50" id="pubkey"></textarea>';
+
+           var certCell1 = rowCert.insertCell(-1);
+           var certCell2 = rowCert.insertCell(-1);
+           certCell1.innerHTML="Certificate";
+           certCell2.innerHTML='<textarea rows="10" cols="50" id="certificate"></textarea>';
+        }
+
+        function generateSelfSignedCerts() {
+        }
+
+        function getCertInfo() {
+        }
+
+        function saveCertData() {
+        }
+
+        // End section for session settings
+        ////////////////////////////////////////////////////////
 
         function showLogLines() {
            HomeyAPI.api('GET', 'settings/getloglines/', function(err, result) {

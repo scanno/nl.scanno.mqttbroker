@@ -14,8 +14,8 @@
             "purgedata": "Delete Data",
             "userArray": "Edit users",
             "brokerStart" : "Start Broker",
-            "brokerStop" : "Stop Broker"
-
+            "brokerStop" : "Stop Broker",
+            "sessionSettings" : "Session Settings"
          },
          "log" : {
             "title" : "Log lines:"
