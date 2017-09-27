@@ -1,6 +1,6 @@
 //const Homey     = require('homey');
 
-const mosca     = require('mosca');
+const mosca     = require('mosca/node_modules/mosca');
 var globalVar1  = null;
 
 class brokerMQTT {
