@@ -6,7 +6,8 @@
              "server_title" : "MQTT broker instellingen",
              "server_details" : "Voer broker gegevens in",
              "server_explanation" : "Om de broker te kunnen gebruiken moeten er een aantal gegevens worden ingevuld. Op dit moment hoeft alleen het poort nummer ingevuld te worden. Normaal gesproken kan port 1883 gebruikt worden",
-             "port" : "Poortnummer"
+             "port" : "Poortnummer",
+             "tls" : "Beveiligde verbinding inschakelen (zie ook de sessie instellingen)"
           },
           "button" : {
              "save" : "Opslaan",
@@ -15,14 +16,15 @@
              "userArray": "Wijzig gebruikers",
              "brokerStart" : "Start Broker",
              "brokerStop" : "Stop Broker",
-             "sessionSettings" : "Sessie instellingen"
+             "sessionSettings" : "Sessie instellingen",
+             "selfsigned" : "Genereer self signed certificaten"
           },
           "log" : {
              "title" : "Laatste log regels"
           },
           "data": {
              "data_settings": "Gebruikers gegevens",
-             "data_explanation": "Voer hier de gebruikere met hun ID en wachtwoord op. Gebruik de Verwijder gegevens knop om alle gebruikers te verwijderen.",
+             "data_explanation": "Druk op onderstaande knoppen om diverse instellingen aan te passen.",
              "data_purge_confirm": "Weet u zeker dat u de gebruikersgegevens wilt verwijderen?"
           },
           "messages" : {

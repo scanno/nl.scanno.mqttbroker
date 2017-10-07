@@ -95,6 +95,42 @@ module.exports = [{
    }
 },
 {
+   description:	'Generate Self Signed Certificates',
+   method:      'POST',
+   path:        '/settings/generateSelfSignedCerts/',
+   requires_authorization: true,
+   role: 'owner',
+   fn: function(args, callback) {
+      var result = Homey.app.generateSelfSignedCerts(args);
+      if( result instanceof Error ) return callback( result );
+      return callback(null, result);
+   }
+},
+{
+   description:	'Save Certificates',
+   method:      'POST',
+   path:        '/settings/saveX509Certs/',
+   requires_authorization: true,
+   role: 'owner',
+   fn: function(args, callback) {
+      var result = Homey.app.saveX509Certs(args);
+      if( result instanceof Error ) return callback( result );
+      return callback( null, result );
+   }
+},
+{
+   description:	'Retreive Certificates',
+   method:      'GET',
+   path:        '/settings/readX509Certs/',
+   requires_authorization: true,
+   role: 'owner',
+   fn: function(args, callback) {
+      var result = Homey.app.readX509Certs();
+      callback(null, result);
+   }
+},
+
+{
    description:	'Show latst 10 loglines',
    method:      'GET',
    path:        '/settings/getloglines/',

@@ -6,7 +6,8 @@
             "server_title" : "MQTT broker setings",
             "server_details" : "Enter broker details",
             "server_explanation" : "You need to specify some data for the broker to be able to.run. At the moment you only need to specify the port number. In the future more options will be available",
-            "port" : "Enter port number"
+            "port" : "Enter port number",
+             "tls" : "Enable secure connections (see also the session settings)"
          },
          "button" : {
             "save" : "Save",
@@ -15,14 +16,15 @@
             "userArray": "Edit users",
             "brokerStart" : "Start Broker",
             "brokerStop" : "Stop Broker",
-            "sessionSettings" : "Session Settings"
+            "sessionSettings" : "Session Settings",
+            "selfsigned" : "Generate self signed certificates"
          },
          "log" : {
             "title" : "Log lines:"
          },
           "data": {
              "data_settings": "User Data",
-             "data_explanation": "Add users with their passwords here. Use the Delete Data button to remove all user data.",
+             "data_explanation": "Use the buttons below to switch different settings pages.",
              "data_purge_confirm": "Are you sure you want to delete all data?"
           },
 

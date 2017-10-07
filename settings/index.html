@@ -19,6 +19,11 @@
                   <br>
                     <input class="form_input" id="ip_port" type="text" value="1883" /> <br>
               </div>
+              <div class="field">
+                 <input class="checkbox" id="tls" type="checkbox"/>
+                 <label class="form_label" for="tls" data-i18n="settings.app.server.tls"></label>
+              </div>
+
            </fieldset>
            <fieldset id="serverstatus">
               <p id="brokerstatus">unkown</p>
@@ -39,8 +44,8 @@
             </div>
 
             <fieldset id="edit_data">
-               <table id="userTable"/>
-               </table>
+               <table id="dynamicTable"></table>
+               <table id="userTable"></table>
 
                <div id="data_addRow"></div>
             </fieldset>
@@ -76,8 +81,20 @@
                     currentValues.ip_port = ip_port;
                   }
            })
+           Homey.get('tls', function(err, tls) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('tls').value = tls;
+                  }
+                  if (typeof tls == 'undefined' || tls == null) tls = false;
+                  document.getElementById('tls').checked = tls;
+                  currentValues.tls = tls;
+           })
+
            Homey.ready();
            createUserTable();
+           isBrokerRunning();
         }
 
         function save() {
@@ -92,6 +109,12 @@
                 currentValues.ip_port = document.getElementById('ip_port').value;
             }
 
+            if (currentValues.tls != document.getElementById('tls').checked) {
+                console.log("tls has been changed");
+                HomeyAPI.set('tls', document.getElementById('tls').checked);
+                valuesHaveBeenChanged = true;
+                currentValues.tls = document.getElementById('tls').checked;
+            }
 
             if (valuesHaveBeenChanged == true) {
                 notifySettings(oldValues);
@@ -122,6 +145,16 @@
            userarray fetched from the backend.
         */
         function createUserTable() {
+           // Delete / clear dynamicTable
+           var dynamic = document.getElementById("dynamicTable");
+           document.getElementById("dynamicTable").style.width = "";
+           var dynamicRows = dynamic.rows.length;
+           if (dynamicRows > 0) {
+              for (var i=0; i < dynamicRows; i++) {
+                 dynamic.deleteRow(-1);
+              }
+           }
+           // Delete / clear userTable
            var table = document.getElementById("userTable");
            document.getElementById("userTable").style.width = "";
            var nRows = table.rows.length;
@@ -220,6 +253,7 @@
         // Section for session settings
         function createSessionSettings() {
            var table = document.getElementById("userTable");
+           var dynamic = document.getElementById("dynamicTable");
            document.getElementById("userTable").style.width = "";
            var nRows = table.rows.length;
            if (nRows > 0) {
@@ -228,33 +262,99 @@
               }
            }
            // create the three input textarea's with description
+           var rowSelfSignedCheck = dynamic.insertRow(-1);
            var rowPrivate = table.insertRow(-1);
-           var rowPublic = table.insertRow(-1);
            var rowCert = table.insertRow(-1);
+           var rowSave = table.insertRow(-1);
 
+           var cellSelfSigned = rowSelfSignedCheck.insertCell(-1);
+           cellSelfSigned.innerHTML='<input class="checkbox" id="selfsigned_check" type="checkbox" checked="false" onchange="showSelfSignedData()"> Use selfsigned certificate';
+           
            var privateCell1 = rowPrivate.insertCell(-1);
            var privateCell2 = rowPrivate.insertCell(-1);
            privateCell1.innerHTML="Private Key";
            privateCell2.innerHTML='<textarea rows="10" cols="50" id="privkey"></textarea>';
 
-           var publicCell1 = rowPublic.insertCell(-1);
-           var publicCell2 = rowPublic.insertCell(-1);
-           publicCell1.innerHTML="Public Key";
-           publicCell2.innerHTML='<textarea rows="10" cols="50" id="pubkey"></textarea>';
-
            var certCell1 = rowCert.insertCell(-1);
            var certCell2 = rowCert.insertCell(-1);
            certCell1.innerHTML="Certificate";
            certCell2.innerHTML='<textarea rows="10" cols="50" id="certificate"></textarea>';
+
+           var saveCell = rowSave.insertCell(-1);
+           saveCell.innerHTML='<button type="button" id="button_savecerts" onclick="saveCertData()" data-i18n="settings.app.button.savecerts">Save Certs</button>';
+
+           showSelfSignedData();
+           getCertInfo();
+        }
+
+        /*
+           Enable / Disable showing selfsigned parameter
+        */
+        function showSelfSignedData() {
+           rowCell = document.getElementById("dynamicTable").insertRow(-1);
+           //
+           // Check if the selfsigned checkbx is checked
+           //
+           if (document.getElementById('selfsigned_check').checked == true) {
+              rowCell.insertCell(-1).innerHTML='CommonName ';
+              rowCell.insertCell(-1).innerHTML='<input class="form_input" id="commonname" type="text"/>';
+              rowCell.insertCell(-1).innerHTML='Days Valid ';
+              rowCell.insertCell(-1).innerHTML='<input class="form_input" id="daysvalid" type="number"/>';
+              document.getElementById("daysvalid").defaultValue = "365";
+
+              var generateRow =  document.getElementById("dynamicTable").insertRow(-1);
+              var generateCell = generateRow.insertCell(-1);
+              generateCell.innerHTML='<button type="button" id="button_generate_selfigned" onclick="generateSelfSignedCerts()" data-i18n="settings.app.button.selfsigned">Generate selfsigned certs</button>';
+
+           } else {
+              // Checkbox is not checked, so if there are rows with selfsigend elements
+              // then remove them
+              var nCells = document.getElementById("dynamicTable").rows.length;
+              if (nCells > 0) {
+                 for (var i=1; i < nCells; i++) {
+                    document.getElementById("dynamicTable").deleteRow(-1);
+                 }
+              }
+           }
+
         }
 
         function generateSelfSignedCerts() {
+           console.log("generateSelfSignedCerts called");
+           var CommonName = document.getElementById("commonname").value;
+           var daysValid = parseInt(document.getElementById("daysvalid").value, 10);
+           HomeyAPI.api('POST', 'settings/generateSelfSignedCerts/', {"commonname": CommonName, "daysvalid" : daysValid }, function(err, result) {
+              if (!err) {
+                 document.getElementById('privkey').value = result.private;
+//                 document.getElementById('pubkey').value = result.public;
+                 document.getElementById('certificate').value = result.cert;
+              };
+           });
+
         }
 
         function getCertInfo() {
+           console.log("getCertInfo() called");
+           HomeyAPI.api('GET', 'settings/readX509Certs/', function(err, result) {
+              if (!err) {
+                 document.getElementById('privkey').value = result.private;
+//                 document.getElementById('pubkey').value = result.public;
+                 document.getElementById('certificate').value = result.cert;
+              };
+           });
         }
 
         function saveCertData() {
+           var pems = {
+              "private" : document.getElementById('privkey').value,
+//              "public" : document.getElementById('pubkey').value,
+              "cert" : document.getElementById('certificate').value
+           };
+           
+           HomeyAPI.api('POST', 'settings/saveX509Certs/', pems, function(err, result) {
+           	  console.log("Data posted");
+                 
+           });       
         }
 
         // End section for session settings

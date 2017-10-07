@@ -1,7 +1,9 @@
-//const Homey     = require('homey');
 
 const mosca     = require('mosca/node_modules/mosca');
 var globalVar1  = null;
+var SECURE_PRIVATEKEY = '/userdata/tls-privkey.pem';
+var SECURE_PUBLICKEY = '/userdata/tls-pubkey.pem';
+var SECURE_CERT = '/userdata/tls-cert.pem';
 
 class brokerMQTT {
 
@@ -17,17 +19,53 @@ class brokerMQTT {
    }
 
    OnInit() {
-//      if (this.getConnectOptions() === true) {
       this.startBroker();
-//         this.brokerEvents();
-//      }
    }
 
    getConnectOptions() {
-      if (this.Homey.ManagerSettings.get('ip_port') > 0) {
-         this.brokerSettings = {
-            port: parseInt(this.Homey.ManagerSettings.get('ip_port'), 10)
-         };
+      var bConfigValid = false;
+      var bTLS = false;
+      var iPort = parseInt(this.Homey.ManagerSettings.get('ip_port'), 10);
+      var bKeyFileValid = false;
+      var bCertFileValid = false;
+
+      if (this.Homey.ManagerSettings.get('tls') == true) {
+         bTLS = true;
+      }
+
+      // Check if key and certificate files are created
+      if (bTLS === true && iPort > 1000) {
+         this.logmodule.writelog('debug', "Check if key and cert PEM files are available");
+         var fs = require('fs');
+         if (fs.existsSync(SECURE_PRIVATEKEY)) {
+            this.logmodule.writelog('debug', "Key file found");
+            bKeyFileValid = true;
+         }
+         if (fs.existsSync(SECURE_CERT)) {
+            this.logmodule.writelog('debug', "Cert file found");
+            bCertFileValid = true;
+         }
+         if (bKeyFileValid === true && bCertFileValid === true) {
+            this.logmodule.writelog('debug', "TLS Config seems valid");
+            bConfigValid = true;
+         }
+      }
+
+      if (bTLS === false && iPort > 1000) {
+         this.logmodule.writelog('debug', "PLAIN Config seems valid");
+         bConfigValid = true;
+      }
+
+      // Create the config struct
+      if (bConfigValid === true) {
+         if (bTLS === true) {
+            this.brokerSettings.secure = {};
+            this.brokerSettings.secure.port = iPort;
+            this.brokerSettings.secure.keyPath = SECURE_PRIVATEKEY;
+            this.brokerSettings.secure.certPath = SECURE_CERT;
+         } else {
+            this.brokerSettings.port = iPort;
+         }
          return true;
       }
       return false;
@@ -36,7 +74,7 @@ class brokerMQTT {
    startBroker() {
       if (this.serverOnline == false && this.getConnectOptions() == true) {
          this.logmodule.writelog('info', "Starting broker...");
-         this.logmodule.writelog('info', "brokerSettings: " + this.brokerSettings);
+         this.logmodule.writelog('info', "brokerSettings: " + JSON.stringify(this.brokerSettings));
          this.server = new mosca.Server(this.brokerSettings);
          this.brokerEvents();
       } else {
@@ -147,6 +185,55 @@ class brokerMQTT {
    authSubscribe(client, topic, callback) {
       // right now now check for topic ACL
       callback(null, true);
+   }
+   
+   // write and read certificate info
+   writeX509Data(pemData) {
+      this.logmodule.writelog('debug', "writeX509Data called");
+      const ref = this;
+      require('fs').writeFile(SECURE_PRIVATEKEY, pemData.private, function (err) {
+         if (err) {
+            ref.logmodule.writelog('error', "Persisting private key failed: "+ err);
+         }
+      });
+//      require('fs').writeFile(SECURE_PUBLICKEY, pemData.public, function (err) {
+//         if (err) {
+//            ref.logmodule.writelog('error', "Persisting public key failed: "+ err);
+//         }
+//      });
+      require('fs').writeFile(SECURE_CERT, pemData.cert, function (err) {
+         if (err) {
+            ref.logmodule.writelog('error', "Persisting cerificate failed: "+ err);
+         }
+      });
+   }
+   
+   readX509Data() {
+      const ref = this;
+      this.logmodule.writelog('debug', "readX509Sata called");
+      var privKey = null;
+//      var pubKey = null;
+      var cert = null;
+      
+      var fs = require('fs');
+      if (fs.existsSync(SECURE_PRIVATEKEY)) {
+         privKey = fs.readFileSync(SECURE_PRIVATEKEY).toString();
+      }
+//      pubKey = fs.readFileSync(SECURE_PUBLICKEY).toString();
+      if (fs.existsSync(SECURE_CERT)) {
+         cert = fs.readFileSync(SECURE_CERT).toString();
+      }
+      
+      ref.logmodule.writelog('debug', "privkey: "+ privKey);
+//      ref.logmodule.writelog('debug', "pubkey: "+ pubKey);
+      ref.logmodule.writelog('debug', "cert: "+ cert);
+      
+      var pems = {};
+      pems.private = privKey;
+//      pems.public = pubKey;
+      pems.cert = cert;
+
+      return pems;
    }
 }
 

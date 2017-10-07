@@ -32,8 +32,8 @@ class MQTTBrokerApp extends Homey.App {
    }*/
 
    changedSettings(args) {
-      this.logmodule.writelog("changedSettings called");
-      this.logmodule.writelog(args.body);
+      this.logmodule.writelog('info',"changedSettings called");
+      this.logmodule.writelog('debug', args.body);
 
       // restart broker to listen on different port number
       this.broker.restartBroker();
@@ -72,6 +72,27 @@ class MQTTBrokerApp extends Homey.App {
    isBrokerRunning() {
       return this.broker.isBrokerRunning();
    }
+
+   generateSelfSignedCerts(args) {
+      this.logmodule.writelog('debug', "generateSelfSignedCerts called in app.js");
+      this.logmodule.writelog('debug', JSON.stringify(args));
+      const selfsigned = require("selfsigned/node_modules/selfsigned");
+
+//      var attrs = [{ name: 'commonName', value: '192.168.1.244' }];
+      var attrs = [{ name: 'commonName', value: args.body.commonname }];
+//      var pems = selfsigned.generate(attrs, { days: 365 });
+      var pems = selfsigned.generate(attrs, { days: args.body.daysvalid });
+
+      return pems;
+   }
+   saveX509Certs(args) {
+      this.broker.writeX509Data(args.body);
+   }
+   
+   readX509Certs() {
+      return this.broker.readX509Data();
+   }
+   
 }
 module.exports = MQTTBrokerApp;
 
