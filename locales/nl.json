@@ -1,4 +1,7 @@
 {
+  "notifications": {
+     "user_added": "De gebruiker __name__ is aan de gebruikers gegevens toegevoegd"
+  },
    "settings" : {
       "app" : {
          "title" : "MQTT broker instellingen",
