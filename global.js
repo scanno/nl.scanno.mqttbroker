@@ -1,4 +1,6 @@
-"use strict";	
+"use strict";
+
+var hashpwd = require("./hashpwd.js");
 
 class globalVars {
 
@@ -18,7 +20,7 @@ class globalVars {
    /*
       initVars() is called as soon as the app is loaded and it will
       initialise the unload event that will persist the userArray and fenceArray
-      It also loads the userArray and fenceArray from file and puts them in the 
+      It also loads the userArray and fenceArray from file and puts them in the
       array.
    */
    initVars() {
@@ -30,7 +32,7 @@ class globalVars {
          if (err) {
             ref.logmodule.writelog('error', "Retreiving broker data failed: "+ err);
          } else {
-            try { 
+            try {
                 ref.userArray = JSON.parse(data);
             } catch (err) {
                ref.logmodule.writelog('error', "Parsing broker data failed: "+ err);
@@ -68,7 +70,7 @@ class globalVars {
             returnValue = true;
       }
 
-      return returnValue; 
+      return returnValue;
    }
 
    /*
@@ -101,7 +103,7 @@ class globalVars {
       const ref = this;
       try {
          var entryArray = ref.getUser(userData.userName);
-   
+
          if (entryArray !== null) {
             entryArray = userData;
          } else {
@@ -123,12 +125,21 @@ class globalVars {
       }
    }
 
+   /*
+      Create a password hash
+   */
+   hashedPassword(userPassword) {
+     var ref = this;
+     var hashedPassword = hashpwd.hashPassword(userPassword);
+     this.logmodule.writelog('debug', "hashedPassword: "+hashedPassword);
+     return hashedPassword;
+   }
 
    createEmptyUser(userName, userPassword) {
       try {
          var newUser = {};
          newUser.userName = userName;
-         newUser.userPassword = userPassword;
+         newUser.userPassword = this.hashedPassword(userPassword);
          return newUser;
       } catch(err) {
          this.logmodule.writelog('error', "createEmptyUser: " +err);
@@ -152,7 +163,8 @@ class globalVars {
                ref.logmodule.writelog('info', "New user added: "+ newUser.userName);
               return true;
             } else {
-               currentUser.userPassword = args.body.userPassword;
+               currentUser.userPassword = this.hashedPassword(args.body.userPassword);
+               ref.logmodule.writelog('debug', "userPassword: " + currentUser.userPassword);
                ref.saveUserData();
             }
          }

@@ -1,6 +1,8 @@
 
 const mosca     = require('mosca/node_modules/mosca');
+var hashpwd = require("./hashpwd.js");
 var globalVar1  = null;
+var logmodule1 = null;
 var SECURE_PRIVATEKEY = '/userdata/tls-privkey.pem';
 var SECURE_PUBLICKEY = '/userdata/tls-pubkey.pem';
 var SECURE_CERT = '/userdata/tls-cert.pem';
@@ -10,6 +12,7 @@ class brokerMQTT {
    constructor(app) {
       this.brokerSettings = {};
       this.logmodule = app.logmodule;
+      logmodule1 = this.logmodule;
       this.globalVar = app.globalVar;
       globalVar1 = this.globalVar;
       this.server = null;
@@ -115,7 +118,7 @@ class brokerMQTT {
       return false;*/
       return this.serverOnline;
    }
-   
+
    brokerEvents() {
       var ref = this;
       // when a client is connected; the client is passed as a parameter
@@ -162,7 +165,25 @@ class brokerMQTT {
       if (username !== null) {
          var userCheck = globalVar1.getUser(username);
          if (userCheck !== null) {
-            var authorized = (username === userCheck.userName && password.toString() === userCheck.userPassword);
+            var authorized = false;
+            if (username === userCheck.userName) {
+//              var checkPwd = require('password-hash-and-salt/node_modules/password-hash-and-salt');
+//              checkPwd(password).verifyAgainst(globalVar1.getUser(username).userPassword, function(error, verified) {
+                if (hashpwd.machPasswords(password, globalVar1.getUser(username).userPassword)) {
+                  authorized = true;
+                }
+/*                if (error) {
+                  logmodule1.writelog('info',"Error checking for hashed password: " + error);
+                  authorized =false;
+                }
+                if (verified) {
+                  logmodule1.writelog('debug', "User verified: " + verified);
+                  authorized = true;
+                } else {
+                  logmodule1.writelog('debug', "User NOT verified: " + verified);
+                }
+              });*/
+            }
             if (authorized) client.user = username;
             callback(null, authorized);
          } else {
@@ -172,6 +193,22 @@ class brokerMQTT {
          callback(null, false);
       }
    }
+
+   /*
+      verifyPassword: Check if the entered password matches the hash
+   */
+/*   verifyPassword(userPassword, hashedPassword) {
+     var password = require('password-hash-and-salt/node_modules/password-hash-and-salt');
+     password(userPassword).verifyAgainst(hashedPassword, function(error, verified) {
+       if (error) {
+         return false;
+       }
+       if (verified) {
+         return true;
+       }
+       return false;
+     });
+   } */
 
    // In this case the client authorized as alice can publish to /users/alice taking
    // the username from the topic and verifing it is the same of the authorized user
@@ -186,7 +223,7 @@ class brokerMQTT {
       // right now now check for topic ACL
       callback(null, true);
    }
-   
+
    // write and read certificate info
    writeX509Data(pemData) {
       this.logmodule.writelog('debug', "writeX509Data called");
@@ -207,14 +244,14 @@ class brokerMQTT {
          }
       });
    }
-   
+
    readX509Data() {
       const ref = this;
       this.logmodule.writelog('debug', "readX509Sata called");
       var privKey = null;
 //      var pubKey = null;
       var cert = null;
-      
+
       var fs = require('fs');
       if (fs.existsSync(SECURE_PRIVATEKEY)) {
          privKey = fs.readFileSync(SECURE_PRIVATEKEY).toString();
@@ -223,11 +260,11 @@ class brokerMQTT {
       if (fs.existsSync(SECURE_CERT)) {
          cert = fs.readFileSync(SECURE_CERT).toString();
       }
-      
+
       ref.logmodule.writelog('debug', "privkey: "+ privKey);
 //      ref.logmodule.writelog('debug', "pubkey: "+ pubKey);
       ref.logmodule.writelog('debug', "cert: "+ cert);
-      
+
       var pems = {};
       pems.private = privKey;
 //      pems.public = pubKey;
