@@ -23,6 +23,14 @@
                  <input class="checkbox" id="tls" type="checkbox"/>
                  <label class="form_label" for="tls" data-i18n="settings.app.server.tls"></label>
               </div>
+              <div class="field">
+                 <input class="checkbox" id="disable_auth" type="checkbox"/>
+                 <label class="form_label" for="disable_auth" data-i18n="settings.app.server.disable_auth"></label>
+              </div>
+              <div class="field">
+                 <input class="checkbox" id="disable_hashing" type="checkbox"/>
+                 <label class="form_label" for="disable_hashing" data-i18n="settings.app.server.disable_hashing"></label>
+              </div>
 
            </fieldset>
            <fieldset id="serverstatus">
@@ -35,11 +43,11 @@
             <legend>
                 <label data-i18n="settings.app.data.data_settings"></label>
             </legend>
-            
+
             <p data-i18n="settings.app.data.data_explanation"></p>
 
             <div>
-               <button type="button" id="button_userTable" onclick="createUserTable()" data-i18n="settings.app.button.userArray">Edit Userdata</button> 
+               <button type="button" id="button_userTable" onclick="createUserTable()" data-i18n="settings.app.button.userArray">Edit Userdata</button>
                <button type="button" id="button_sessionSettings" onclick="createSessionSettings()" data-i18n="settings.app.button.sessionSettings">Session settings</button>
             </div>
 
@@ -50,7 +58,7 @@
                <div id="data_addRow"></div>
             </fieldset>
 
-            <button type="button" id="button_purge" onclick="purgeUserData()" data-i18n="settings.app.button.purgedata">Purge Data</button>           
+            <button type="button" id="button_purge" onclick="purgeUserData()" data-i18n="settings.app.button.purgedata">Purge Data</button>
 
         </fieldset>
 
@@ -91,6 +99,26 @@
                   document.getElementById('tls').checked = tls;
                   currentValues.tls = tls;
            })
+           Homey.get('disable_auth', function(err, disable_auth) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('disable_auth').value = disable_auth;
+                  }
+                  if (typeof disable_auth == 'undefined' || disable_auth == null) disable_auth = false;
+                  document.getElementById('disable_auth').checked = disable_auth;
+                  currentValues.tls = disable_auth;
+           })
+           Homey.get('disable_hashing', function(err, disable_hashing) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('disable_hashing').value = disable_hashing;
+                  }
+                  if (typeof disable_hashing == 'undefined' || disable_hashing == null) disable_hashing = false;
+                  document.getElementById('disable_hashing').checked = disable_hashing;
+                  currentValues.tls = disable_hashing;
+           })
 
            Homey.ready();
            createUserTable();
@@ -114,6 +142,20 @@
                 HomeyAPI.set('tls', document.getElementById('tls').checked);
                 valuesHaveBeenChanged = true;
                 currentValues.tls = document.getElementById('tls').checked;
+            }
+
+            if (currentValues.disable_auth != document.getElementById('disable_auth').checked) {
+                console.log("disable_auth has been changed");
+                HomeyAPI.set('disable_auth', document.getElementById('disable_auth').checked);
+                valuesHaveBeenChanged = true;
+                currentValues.disable_auth = document.getElementById('disable_auth').checked;
+            }
+
+            if (currentValues.disable_hashing != document.getElementById('disable_hashing').checked) {
+                console.log("disable_hashing has been changed");
+                HomeyAPI.set('disable_hashing', document.getElementById('disable_hashing').checked);
+                valuesHaveBeenChanged = true;
+                currentValues.disable_hashing = document.getElementById('disable_hashing').checked;
             }
 
             if (valuesHaveBeenChanged == true) {
@@ -269,7 +311,7 @@
 
            var cellSelfSigned = rowSelfSignedCheck.insertCell(-1);
            cellSelfSigned.innerHTML='<input class="checkbox" id="selfsigned_check" type="checkbox" checked="false" onchange="showSelfSignedData()"> Use selfsigned certificate';
-           
+
            var privateCell1 = rowPrivate.insertCell(-1);
            var privateCell2 = rowPrivate.insertCell(-1);
            privateCell1.innerHTML="Private Key";
@@ -350,11 +392,11 @@
 //              "public" : document.getElementById('pubkey').value,
               "cert" : document.getElementById('certificate').value
            };
-           
+
            HomeyAPI.api('POST', 'settings/saveX509Certs/', pems, function(err, result) {
            	  console.log("Data posted");
-                 
-           });       
+
+           });
         }
 
         // End section for session settings
@@ -377,7 +419,7 @@
               isBrokerRunning();
            });
         }
-        
+
         function stopBroker() {
            HomeyAPI.api('POST', 'settings/stopBroker/', null, function(err, result) {
               console.log("stopBroker() called");
@@ -401,4 +443,3 @@
 
     </body>
 </html>
-

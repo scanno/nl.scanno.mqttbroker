@@ -3,6 +3,8 @@ const mosca     = require('mosca/node_modules/mosca');
 var hashpwd = require("./hashpwd.js");
 var globalVar1  = null;
 var logmodule1 = null;
+var globHomey = null;
+
 var SECURE_PRIVATEKEY = '/userdata/tls-privkey.pem';
 var SECURE_PUBLICKEY = '/userdata/tls-pubkey.pem';
 var SECURE_CERT = '/userdata/tls-cert.pem';
@@ -18,6 +20,7 @@ class brokerMQTT {
       this.server = null;
       this.serverOnline = false;
       this.Homey = require('homey');
+      globHomey = this.Homey;
       this.OnInit();
    }
 
@@ -162,35 +165,34 @@ class brokerMQTT {
 
    // Accepts the connection if the username and password are valid
    authUser(client, username, password, callback) {
-      if (username !== null) {
-         var userCheck = globalVar1.getUser(username);
-         if (userCheck !== null) {
-            var authorized = false;
-            if (username === userCheck.userName) {
-//              var checkPwd = require('password-hash-and-salt/node_modules/password-hash-and-salt');
-//              checkPwd(password).verifyAgainst(globalVar1.getUser(username).userPassword, function(error, verified) {
-                if (hashpwd.machPasswords(password, globalVar1.getUser(username).userPassword)) {
-                  authorized = true;
-                }
-/*                if (error) {
-                  logmodule1.writelog('info',"Error checking for hashed password: " + error);
-                  authorized =false;
-                }
-                if (verified) {
-                  logmodule1.writelog('debug', "User verified: " + verified);
-                  authorized = true;
-                } else {
-                  logmodule1.writelog('debug', "User NOT verified: " + verified);
-                }
-              });*/
+      if (globHomey.ManagerSettings.get('disable_auth') == false) {
+         if (username !== null) {
+            var userCheck = globalVar1.getUser(username);
+            if (userCheck !== null) {
+               var authorized = false;
+               if (username === userCheck.userName) {
+                 if (globHomey.ManagerSettings.get('disable_hashing') == false) {
+                     if (hashpwd.machPasswords(password, globalVar1.getUser(username).userPassword)) {
+                        authorized = true;
+                      }
+                 } else {
+                   logmodule1.writelog('debug', "plain pwd ("+password +" / "+globalVar1.getUser(username).userPassword+")");
+                   if (password ==  globalVar1.getUser(username).userPassword) {
+                     logmodule1.writelog('debug',"plain pwd authorized");
+                     authorized = true; 
+                   }
+                 }
+               }
+               if (authorized) client.user = username;
+               callback(null, authorized);
+            } else {
+               callback(null, false);
             }
-            if (authorized) client.user = username;
-            callback(null, authorized);
          } else {
             callback(null, false);
          }
       } else {
-         callback(null, false);
+        callback(null,true);
       }
    }
 

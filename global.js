@@ -139,7 +139,11 @@ class globalVars {
       try {
          var newUser = {};
          newUser.userName = userName;
-         newUser.userPassword = this.hashedPassword(userPassword);
+         if (this.Homey.ManagerSettings.get('disable_hashing') == false ) {
+            newUser.userPassword = this.hashedPassword(userPassword);
+         } else {
+           newUser.userPassword = userPassword;
+         }
          return newUser;
       } catch(err) {
          this.logmodule.writelog('error', "createEmptyUser: " +err);
@@ -163,7 +167,11 @@ class globalVars {
                ref.logmodule.writelog('info', "New user added: "+ newUser.userName);
               return true;
             } else {
-               currentUser.userPassword = this.hashedPassword(args.body.userPassword);
+               if (this.Homey.ManagerSettings.get('disable_hashing') == false ) {
+                 currentUser.userPassword = this.hashedPassword(args.body.userPassword);
+               } else {
+                 currentUser.userPassword = args.body.userPassword;
+               }
                ref.logmodule.writelog('debug', "userPassword: " + currentUser.userPassword);
                ref.saveUserData();
             }
