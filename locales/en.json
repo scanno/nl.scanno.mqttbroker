@@ -21,8 +21,20 @@
             "userArray": "Edit users",
             "brokerStart" : "Start Broker",
             "brokerStop" : "Stop Broker",
+            "brokerRunning": "Broker is Running",
+            "brokerStopped": "Broker is NOT Running",
             "sessionSettings" : "Session Settings",
-            "selfsigned" : "Generate self signed certificates"
+            "savecert": "Save certificate",
+            "selfsigned" : "Generate Certificate"
+         },
+         "text" : {
+           "selfsigned": "Generate a selfsigned certificate",
+           "commonname": "CommonName",
+           "daysvalid": "Days valid",
+           "privatekey": "Priate key",
+           "certificate": "Certificate",
+           "user": "User",
+           "password": "Password"
          },
          "log" : {
             "title" : "Log lines:"

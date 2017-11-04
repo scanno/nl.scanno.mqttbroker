@@ -12,7 +12,7 @@
              "port" : "Poortnummer",
              "tls" : "Beveiligde verbinding inschakelen (zie ook de sessie instellingen)",
              "disable_auth" : "Authenticatie van gebruikers UITZETTEN (wordt niet aangeraden)",
-             "disable_hashing" : "Hashen van wachtwoorden UITZETTEN (wordt niet aangeraden)"             
+             "disable_hashing" : "Hashen van wachtwoorden UITZETTEN (wordt niet aangeraden)"
           },
           "button" : {
              "save" : "Opslaan",
@@ -21,8 +21,20 @@
              "userArray": "Wijzig gebruikers",
              "brokerStart" : "Start Broker",
              "brokerStop" : "Stop Broker",
+             "brokerRunning": "Broker is Actief",
+             "brokerStopped": "Broker is NIET Actief",
              "sessionSettings" : "Sessie instellingen",
-             "selfsigned" : "Genereer self signed certificaten"
+             "savecert": "Opslaan certificaat",
+             "selfsigned" : "Genereer Certificaat"
+          },
+          "text" : {
+            "selfsigned": "Genereer een selfsigned certificaat",
+            "commonname": "CommonName",
+            "daysvalid": "Dagen geldig",
+            "privatekey": "Prive sleutel",
+            "certificate": "Certificaat",
+            "user": "Gebruiker",
+            "password": "Wachtwoord"
           },
           "log" : {
              "title" : "Laatste log regels"

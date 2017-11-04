@@ -77,6 +77,7 @@
 
         var currentValues = {};
         var HomeyAPI = null;
+        var ShowSelfSigned = false;
 
         function onHomeyReady(Homey){
            HomeyAPI = Homey;
@@ -210,8 +211,8 @@
            var rowhead = header.insertRow(0);
            var cellhead = rowhead.insertCell(0);
            var cellhead1 = rowhead.insertCell(1);
-           cellhead.innerHTML = "<b>User</b>";
-           cellhead1.innerHTML="<b>Password</b>";
+           cellhead.innerHTML = "<b>"+HomeyAPI.__("settings.app.text.user")+"</b>";
+           cellhead1.innerHTML="<b>"+HomeyAPI.__("settings.app.text.password")+"</b>";
 
            HomeyAPI.api('GET', 'settings/getUserArray/', function(err, result) {
               if (!err) {
@@ -310,20 +311,21 @@
            var rowSave = table.insertRow(-1);
 
            var cellSelfSigned = rowSelfSignedCheck.insertCell(-1);
-           cellSelfSigned.innerHTML='<input class="checkbox" id="selfsigned_check" type="checkbox" checked="false" onchange="showSelfSignedData()"> Use selfsigned certificate';
+           cellSelfSigned.innerHTML='<input class="checkbox" id="selfsigned_check" type="checkbox" checked="false" onchange="showSelfSignedData()"> '+HomeyAPI.__("settings.app.text.selfsigned");
+           document.getElementById('selfsigned_check').checked = ShowSelfSigned;
 
            var privateCell1 = rowPrivate.insertCell(-1);
            var privateCell2 = rowPrivate.insertCell(-1);
-           privateCell1.innerHTML="Private Key";
+           privateCell1.innerHTML=HomeyAPI.__("settings.app.text.privatekey");
            privateCell2.innerHTML='<textarea rows="10" cols="50" id="privkey"></textarea>';
 
            var certCell1 = rowCert.insertCell(-1);
            var certCell2 = rowCert.insertCell(-1);
-           certCell1.innerHTML="Certificate";
+           certCell1.innerHTML=HomeyAPI.__("settings.app.text.certificate");
            certCell2.innerHTML='<textarea rows="10" cols="50" id="certificate"></textarea>';
 
            var saveCell = rowSave.insertCell(-1);
-           saveCell.innerHTML='<button type="button" id="button_savecerts" onclick="saveCertData()" data-i18n="settings.app.button.savecerts">Save Certs</button>';
+           saveCell.innerHTML='<button type="button" id="button_savecerts" onclick="saveCertData()">'+HomeyAPI.__("settings.app.button.savecert")+'</button>';
 
            showSelfSignedData();
            getCertInfo();
@@ -338,19 +340,21 @@
            // Check if the selfsigned checkbx is checked
            //
            if (document.getElementById('selfsigned_check').checked == true) {
-              rowCell.insertCell(-1).innerHTML='CommonName ';
+              ShowSelfSigned = true;
+              rowCell.insertCell(-1).innerHTML=HomeyAPI.__("settings.app.text.commonname")+' ';
               rowCell.insertCell(-1).innerHTML='<input class="form_input" id="commonname" type="text"/>';
-              rowCell.insertCell(-1).innerHTML='Days Valid ';
+              rowCell.insertCell(-1).innerHTML=HomeyAPI.__("settings.app.text.daysvalid")+'  ';
               rowCell.insertCell(-1).innerHTML='<input class="form_input" id="daysvalid" type="number"/>';
               document.getElementById("daysvalid").defaultValue = "365";
 
               var generateRow =  document.getElementById("dynamicTable").insertRow(-1);
               var generateCell = generateRow.insertCell(-1);
-              generateCell.innerHTML='<button type="button" id="button_generate_selfigned" onclick="generateSelfSignedCerts()" data-i18n="settings.app.button.selfsigned">Generate selfsigned certs</button>';
+              generateCell.innerHTML='<button type="button" id="button_generate_selfigned" onclick="generateSelfSignedCerts()">'+HomeyAPI.__("settings.app.button.selfsigned")+'</button>';
 
            } else {
               // Checkbox is not checked, so if there are rows with selfsigend elements
               // then remove them
+              ShowSelfSigned = false;
               var nCells = document.getElementById("dynamicTable").rows.length;
               if (nCells > 0) {
                  for (var i=1; i < nCells; i++) {
@@ -431,9 +435,9 @@
            HomeyAPI.api('GET', 'settings/isBrokerRunning/', function(err, result) {
               if (!err) {
                  if (result === true) {
-                    document.getElementById('brokerstatus').innerHTML = 'Running';
+                    document.getElementById('brokerstatus').innerHTML = HomeyAPI.__("settings.app.button.brokerRunning");//'Running';
                  } else {
-                    document.getElementById('brokerstatus').innerHTML = 'Stopped';
+                    document.getElementById('brokerstatus').innerHTML = HomeyAPI.__("settings.app.button.brokerStopped"); //'Stopped';
                  }
               };
            });
