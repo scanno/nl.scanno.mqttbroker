@@ -12,7 +12,8 @@
              "port" : "Poortnummer",
              "tls" : "Beveiligde verbinding inschakelen (zie ook de sessie instellingen)",
              "disable_auth" : "Authenticatie van gebruikers UITZETTEN (wordt niet aangeraden)",
-             "disable_hashing" : "Hashen van wachtwoorden UITZETTEN (wordt niet aangeraden)"
+             "disable_hashing" : "Hashen van wachtwoorden UITZETTEN (wordt niet aangeraden)",
+             "enable_debug_log": "DEBUG logging aanzetten"
           },
           "button" : {
              "save" : "Opslaan",

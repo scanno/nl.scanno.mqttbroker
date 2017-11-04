@@ -1,7 +1,7 @@
 'use strict';
 
 var crypto = require('crypto');
-var logmodule = require('./logmodule.js');
+//var logmodule = require('./logmodule.js');
 var iterations = 10000;
 
 module.exports = {
@@ -32,20 +32,20 @@ function machPasswords(Password, hashedPassword) {
   if (hashedPassword === undefined) {
      return false;
   }
-  
+
   var key = hashedPassword.split('$');
   if(key.length !== 4 || !key[2] || !key[3]) {
-    logmodule.writelog('debug',"Password not formatted correctly")
+//    logmodule.writelog('debug',"Password not formatted correctly")
     return false;
   }
 
   if(key[0] !== 'pbkdf2' || key[1] !== iterations.toString()) {
-    logmodule.writelog('debug', 'Wrong algorithm and/or iterations');
+//    logmodule.writelog('debug', 'Wrong algorithm and/or iterations');
     return false;
   }
   var newHash = hashPassword(Password, key[3]);
-  logmodule.writelog('debug', "newHash: "+newHash);
-  logmodule.writelog('debug', "orgHash: "+hashedPassword);
+//  logmodule.writelog('debug', "newHash: "+newHash);
+//  logmodule.writelog('debug', "orgHash: "+hashedPassword);
   if (newHash === hashedPassword) {
     return true
   } else {

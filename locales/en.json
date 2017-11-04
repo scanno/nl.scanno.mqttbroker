@@ -12,7 +12,8 @@
             "port" : "Enter port number",
              "tls" : "Enable secure connections (see also the session settings)",
              "disable_auth" : "DISABLE user authentication (NOT recommended)",
-             "disable_hashing" : "DISABLE password hashing (NOT recommended)"
+             "disable_hashing" : "DISABLE password hashing (NOT recommended)",
+             "enable_debug_log": "Enable DEBUG logging"
          },
          "button" : {
             "save" : "Save",

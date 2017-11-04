@@ -31,6 +31,10 @@
                  <input class="checkbox" id="disable_hashing" type="checkbox"/>
                  <label class="form_label" for="disable_hashing" data-i18n="settings.app.server.disable_hashing"></label>
               </div>
+              <div class="field">
+                 <input class="checkbox" id="set_debug" type="checkbox"/>
+                 <label class="form_label" for="set_debug" data-i18n="settings.app.server.enable_debug_log"></label>
+              </div>
 
            </fieldset>
            <fieldset id="serverstatus">
@@ -108,7 +112,7 @@
                   }
                   if (typeof disable_auth == 'undefined' || disable_auth == null) disable_auth = false;
                   document.getElementById('disable_auth').checked = disable_auth;
-                  currentValues.tls = disable_auth;
+                  currentValues.disable_auth = disable_auth;
            })
            Homey.get('disable_hashing', function(err, disable_hashing) {
                   if (err) {
@@ -118,7 +122,17 @@
                   }
                   if (typeof disable_hashing == 'undefined' || disable_hashing == null) disable_hashing = false;
                   document.getElementById('disable_hashing').checked = disable_hashing;
-                  currentValues.tls = disable_hashing;
+                  currentValues.disable_hashing = disable_hashing;
+           })
+           Homey.get('set_debug', function(err, set_debug) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('set_debug').value = set_debug;
+                  }
+                  if (typeof set_debug == 'undefined' || set_debug == null) set_debug = false;
+                  document.getElementById('set_debug').checked = set_debug;
+                  currentValues.set_debug = set_debug;
            })
 
            Homey.ready();
@@ -157,6 +171,13 @@
                 HomeyAPI.set('disable_hashing', document.getElementById('disable_hashing').checked);
                 valuesHaveBeenChanged = true;
                 currentValues.disable_hashing = document.getElementById('disable_hashing').checked;
+            }
+
+            if (currentValues.set_debug != document.getElementById('set_debug').checked) {
+                console.log("set_debug has been changed");
+                HomeyAPI.set('set_debug', document.getElementById('set_debug').checked);
+                valuesHaveBeenChanged = true;
+                currentValues.set_debug = document.getElementById('set_debug').checked;
             }
 
             if (valuesHaveBeenChanged == true) {

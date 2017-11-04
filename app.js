@@ -3,10 +3,11 @@ const Homey = require('homey');
 
 const globalVarMQTT = require("./global.js");
 const brokerMQTT    = require("./broker.js");
+const logMQTT       = require("./logmodule.js");
 
 class MQTTBrokerApp extends Homey.App {
    onInit() {
-      this.logmodule = require("./logmodule.js");
+      this.logmodule = new logMQTT(this);
       this.globalVar = new globalVarMQTT(this);
       this.broker = new brokerMQTT(this);
 //      this.server = new mosca.Server(settings);
@@ -34,6 +35,7 @@ class MQTTBrokerApp extends Homey.App {
    changedSettings(args) {
       this.logmodule.writelog('info',"changedSettings called");
       this.logmodule.writelog('debug', args.body);
+      this.logmodule.setDebugState();
 
       // restart broker to listen on different port number
       this.broker.restartBroker();
@@ -60,15 +62,15 @@ class MQTTBrokerApp extends Homey.App {
    getUserArray() {
       return this.globalVar.getUserArray();
    }
-   
+
    startBroker(args) {
       return this.broker.startBroker();
    }
-   
+
    stopBroker(args) {
       return this.broker.stopBroker();
    }
-   
+
    isBrokerRunning() {
       return this.broker.isBrokerRunning();
    }
@@ -88,11 +90,10 @@ class MQTTBrokerApp extends Homey.App {
    saveX509Certs(args) {
       this.broker.writeX509Data(args.body);
    }
-   
+
    readX509Certs() {
       return this.broker.readX509Data();
    }
-   
+
 }
 module.exports = MQTTBrokerApp;
-
