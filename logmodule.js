@@ -48,7 +48,6 @@ class Logger {
               excerpt: line
            }, function( err, notification ) {
               if( err ) return console.error( err );
-                 if (this.DEBUG) console.log( 'Notification added' );
            });
         case 'debug':
            if (this.DEBUG == false) break;
