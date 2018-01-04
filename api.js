@@ -140,9 +140,37 @@ module.exports = [{
       console.log("API: Incoming POST on /test/getloglines/");
       var result = Homey.app.getLogLines(args);
       callback(null, result);
-   }
+   },
+},
 
-}]
+{
+   description:	'Get mqtt info (app2app)',
+   method:      'GET',
+   path:        '/app2app/info/',
+   requires_authorization: true,
+   role: 'app',
+   fn: function(args, callback) {
+      result = {
+         port: Number(Homey.ManagerSettings.get('ip_port') || 1338),
+         tls: !!Homey.ManagerSettings.get('tls'),
+      };
+      return callback( null, result );
+   }
+},
+
+{
+   description:	'Add or Update User (app2app)',
+   method:      'PUT',
+   path:        '/app2app/user/',
+   requires_authorization: true,
+   role: 'app',
+   fn: function(args, callback) {
+      result = Homey.app.addNewUser(args);
+      if( result instanceof Error ) return callback( result );
+      return callback( null, result );
+   }
+},
+]
 
 
 
