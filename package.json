@@ -1,6 +1,6 @@
 {
   "name": "nl.scanno.mqttbroker",
-  "version": "0.1.2",
+  "version": "0.1.9",
   "description": "MQTT Broker",
   "main": "app.js",
   "dependencies": {
