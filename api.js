@@ -151,8 +151,10 @@ module.exports = [{
    role: 'app',
    fn: function(args, callback) {
       result = {
-         port: Number(Homey.ManagerSettings.get('ip_port') || 1338),
+         port: Number(Homey.ManagerSettings.get('ip_port') || 1883),
          tls: !!Homey.ManagerSettings.get('tls'),
+         port_tls: Number(Homey.ManagerSettings.get('ip_port_tls') || 8883),
+         allow_nonsecure: !!Homey.ManagerSettings.get('allow_nonsecure'),
       };
       return callback( null, result );
    }
@@ -171,7 +173,3 @@ module.exports = [{
    }
 },
 ]
-
-
-
-
