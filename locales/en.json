@@ -9,8 +9,10 @@
             "server_title" : "MQTT broker setings",
             "server_details" : "Enter broker details",
             "server_explanation" : "You need to specify some data for the broker to be able to.run. At the moment you only need to specify the port number. In the future more options will be available",
-            "port" : "Enter port number",
+            "port" : "Enter port number unsecure connections",
              "tls" : "Enable secure connections (see also the session settings)",
+             "port_tls" : "Enter port number for secure connections",
+             "allow_nonsecure" : "Also allow unsecure connections",
              "disable_auth" : "DISABLE user authentication (NOT recommended)",
              "disable_hashing" : "DISABLE password hashing (NOT recommended)",
              "enable_debug_log": "Enable DEBUG logging"

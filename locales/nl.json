@@ -9,8 +9,10 @@
              "server_title" : "MQTT broker instellingen",
              "server_details" : "Voer broker gegevens in",
              "server_explanation" : "Om de broker te kunnen gebruiken moeten er een aantal gegevens worden ingevuld. Op dit moment hoeft alleen het poort nummer ingevuld te worden. Normaal gesproken kan port 1883 gebruikt worden",
-             "port" : "Poortnummer",
+             "port" : "Poortnummer voor onbeveiligde verbinding",
              "tls" : "Beveiligde verbinding inschakelen (zie ook de sessie instellingen)",
+             "port_tls" : "Poort voor beveiligde verbinding",
+             "allow_nonsecure" : "Toestaan onbeveiligde verbinding (naast TLS)",
              "disable_auth" : "Authenticatie van gebruikers UITZETTEN (wordt niet aangeraden)",
              "disable_hashing" : "Hashen van wachtwoorden UITZETTEN (wordt niet aangeraden)",
              "enable_debug_log": "DEBUG logging aanzetten"

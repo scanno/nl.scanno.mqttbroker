@@ -31,16 +31,23 @@ class brokerMQTT {
    getConnectOptions() {
       var bConfigValid = false;
       var bTLS = false;
+      var bAllowNonSecure = false;
       var iPort = parseInt(this.Homey.ManagerSettings.get('ip_port'), 10);
+      var iPortTLS = parseInt(this.Homey.ManagerSettings.get('ip_port_tls'), 10);
       var bKeyFileValid = false;
       var bCertFileValid = false;
+
+      this.brokerSettings = {};
 
       if (this.Homey.ManagerSettings.get('tls') == true) {
          bTLS = true;
       }
+      if (this.Homey.ManagerSettings.get('allow_nonsecure') == true) {
+        bAllowNonSecure = true;
+      }
 
       // Check if key and certificate files are created
-      if (bTLS === true && iPort > 1000) {
+      if (bTLS === true && iPortTLS > 1000) {
          this.logmodule.writelog('debug', "Check if key and cert PEM files are available");
          var fs = require('fs');
          if (fs.existsSync(SECURE_PRIVATEKEY)) {
@@ -57,7 +64,7 @@ class brokerMQTT {
          }
       }
 
-      if (bTLS === false && iPort > 1000) {
+      if ((bTLS === false || bAllowNonSecure === true) && iPort > 1000) {
          this.logmodule.writelog('debug', "PLAIN Config seems valid");
          bConfigValid = true;
       }
@@ -66,11 +73,16 @@ class brokerMQTT {
       if (bConfigValid === true) {
          if (bTLS === true) {
             this.brokerSettings.secure = {};
-            this.brokerSettings.secure.port = iPort;
+            this.brokerSettings.secure.port = iPortTLS;
             this.brokerSettings.secure.keyPath = SECURE_PRIVATEKEY;
             this.brokerSettings.secure.certPath = SECURE_CERT;
-         } else {
-            this.brokerSettings.port = iPort;
+         }
+         if (bTLS === false || bAllowNonSecure === true) {
+           this.brokerSettings.port = iPort;
+           if (bAllowNonSecure === true) {
+             // add allowNonSecure here when both http and https should be allowed
+             this.brokerSettings.allowNonSecure = true;
+           }
          }
          return true;
       }
@@ -179,7 +191,7 @@ class brokerMQTT {
                    logmodule1.writelog('debug', "plain pwd ("+password +" / "+globalVar1.getUser(username).userPassword+")");
                    if (password ==  globalVar1.getUser(username).userPassword) {
                      logmodule1.writelog('debug',"plain pwd authorized");
-                     authorized = true; 
+                     authorized = true;
                    }
                  }
                }

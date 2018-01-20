@@ -23,6 +23,16 @@
                  <input class="checkbox" id="tls" type="checkbox"/>
                  <label class="form_label" for="tls" data-i18n="settings.app.server.tls"></label>
               </div>
+              <div class="field row">
+                 <label class="form_label" for="ip_port_tls" data-i18n="settings.app.server.port_tls"></label>
+                  <br>
+                    <input class="form_input" id="ip_port_tls" type="text" value="8883" /> <br>
+              </div>
+              <div class="field">
+                 <input class="checkbox" id="allow_nonsecure" type="checkbox"/>
+                 <label class="form_label" for="allow_nonsecure" data-i18n="settings.app.server.allow_nonsecure"></label>
+              </div>
+
               <div class="field">
                  <input class="checkbox" id="disable_auth" type="checkbox"/>
                  <label class="form_label" for="disable_auth" data-i18n="settings.app.server.disable_auth"></label>
@@ -104,6 +114,25 @@
                   document.getElementById('tls').checked = tls;
                   currentValues.tls = tls;
            })
+           Homey.get('ip_port_tls', function(err, ip_port_tls) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('ip_port_tls').value = ip_port_tls;
+                    currentValues.ip_port_tls = ip_port_tls;
+                  }
+           })
+           Homey.get('allow_nonsecure', function(err, allow_nonsecure) {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    document.getElementById('allow_nonsecure').value = allow_nonsecure;
+                  }
+                  if (typeof allow_nonsecure == 'undefined' || allow_nonsecure == null) allow_nonsecure = false;
+                  document.getElementById('allow_nonsecure').checked = allow_nonsecure;
+                  currentValues.allow_nonsecure = allow_nonsecure;
+           })
+
            Homey.get('disable_auth', function(err, disable_auth) {
                   if (err) {
                     console.error(err)
@@ -157,6 +186,18 @@
                 HomeyAPI.set('tls', document.getElementById('tls').checked);
                 valuesHaveBeenChanged = true;
                 currentValues.tls = document.getElementById('tls').checked;
+            }
+            if (currentValues.ip_port_tls != document.getElementById('ip_port_tls').value) {
+                console.log("ip_port_tls has been changed");
+                HomeyAPI.set('ip_port_tls', document.getElementById('ip_port_tls').value);
+                valuesHaveBeenChanged = true;
+                currentValues.ip_port_tls = document.getElementById('ip_port_tls').value;
+            }
+            if (currentValues.allow_nonsecure != document.getElementById('allow_nonsecure').checked) {
+                console.log("allow_nonsecure has been changed");
+                HomeyAPI.set('allow_nonsecure', document.getElementById('allow_nonsecure').checked);
+                valuesHaveBeenChanged = true;
+                currentValues.allow_nonsecure = document.getElementById('allow_nonsecure').checked;
             }
 
             if (currentValues.disable_auth != document.getElementById('disable_auth').checked) {
