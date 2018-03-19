@@ -35,6 +35,7 @@
             "commonname": "CommonName",
             "daysvalid": "Dagen geldig",
             "privatekey": "Prive sleutel",
+            "publickey": "Publieke sleutel",
             "certificate": "Certificaat",
             "user": "Gebruiker",
             "password": "Wachtwoord"

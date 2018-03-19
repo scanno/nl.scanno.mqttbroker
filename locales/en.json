@@ -34,7 +34,8 @@
            "selfsigned": "Generate a selfsigned certificate",
            "commonname": "CommonName",
            "daysvalid": "Days valid",
-           "privatekey": "Priate key",
+           "privatekey": "Private Key",
+           "publickey": "Public Key",
            "certificate": "Certificate",
            "user": "User",
            "password": "Password"

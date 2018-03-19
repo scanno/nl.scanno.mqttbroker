@@ -247,11 +247,11 @@ class brokerMQTT {
             ref.logmodule.writelog('error', "Persisting private key failed: "+ err);
          }
       });
-//      require('fs').writeFile(SECURE_PUBLICKEY, pemData.public, function (err) {
-//         if (err) {
-//            ref.logmodule.writelog('error', "Persisting public key failed: "+ err);
-//         }
-//      });
+      require('fs').writeFile(SECURE_PUBLICKEY, pemData.public, function (err) {
+         if (err) {
+            ref.logmodule.writelog('error', "Persisting public key failed: "+ err);
+         }
+      });
       require('fs').writeFile(SECURE_CERT, pemData.cert, function (err) {
          if (err) {
             ref.logmodule.writelog('error', "Persisting cerificate failed: "+ err);
@@ -263,25 +263,28 @@ class brokerMQTT {
       const ref = this;
       this.logmodule.writelog('debug', "readX509Sata called");
       var privKey = null;
-//      var pubKey = null;
+      var pubKey = null;
       var cert = null;
 
       var fs = require('fs');
       if (fs.existsSync(SECURE_PRIVATEKEY)) {
          privKey = fs.readFileSync(SECURE_PRIVATEKEY).toString();
-      }
-//      pubKey = fs.readFileSync(SECURE_PUBLICKEY).toString();
-      if (fs.existsSync(SECURE_CERT)) {
-         cert = fs.readFileSync(SECURE_CERT).toString();
+         ref.logmodule.writelog('debug', "privkey: "+ privKey);
       }
 
-      ref.logmodule.writelog('debug', "privkey: "+ privKey);
-//      ref.logmodule.writelog('debug', "pubkey: "+ pubKey);
-      ref.logmodule.writelog('debug', "cert: "+ cert);
+      if (fs.existsSync(SECURE_PUBLICKEY)) {
+         pubKey = fs.readFileSync(SECURE_PUBLICKEY).toString();
+         ref.logmodule.writelog('debug', "pubkey: "+ pubKey);
+      }
+
+      if (fs.existsSync(SECURE_CERT)) {
+         cert = fs.readFileSync(SECURE_CERT).toString();
+         ref.logmodule.writelog('debug', "cert: "+ cert);
+      }
 
       var pems = {};
       pems.private = privKey;
-//      pems.public = pubKey;
+      pems.public = pubKey;
       pems.cert = cert;
 
       return pems;

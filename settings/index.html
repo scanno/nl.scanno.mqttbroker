@@ -381,6 +381,11 @@
            privateCell1.innerHTML=HomeyAPI.__("settings.app.text.privatekey");
            privateCell2.innerHTML='<textarea rows="10" cols="50" id="privkey"></textarea>';
 
+           var publicCell1 = rowPrivate.insertCell(-1);
+           var publicCell2 = rowPrivate.insertCell(-1);
+           publicCell1.innerHTML=HomeyAPI.__("settings.app.text.publickey");
+           publicCell2.innerHTML='<textarea rows="10" cols="50" id="pubkey"></textarea>';
+
            var certCell1 = rowCert.insertCell(-1);
            var certCell2 = rowCert.insertCell(-1);
            certCell1.innerHTML=HomeyAPI.__("settings.app.text.certificate");
@@ -434,7 +439,7 @@
            HomeyAPI.api('POST', 'settings/generateSelfSignedCerts/', {"commonname": CommonName, "daysvalid" : daysValid }, function(err, result) {
               if (!err) {
                  document.getElementById('privkey').value = result.private;
-//                 document.getElementById('pubkey').value = result.public;
+                 document.getElementById('pubkey').value = result.public;
                  document.getElementById('certificate').value = result.cert;
               };
            });
@@ -446,7 +451,7 @@
            HomeyAPI.api('GET', 'settings/readX509Certs/', function(err, result) {
               if (!err) {
                  document.getElementById('privkey').value = result.private;
-//                 document.getElementById('pubkey').value = result.public;
+                 document.getElementById('pubkey').value = result.public;
                  document.getElementById('certificate').value = result.cert;
               };
            });
@@ -455,7 +460,7 @@
         function saveCertData() {
            var pems = {
               "private" : document.getElementById('privkey').value,
-//              "public" : document.getElementById('pubkey').value,
+              "public" : document.getElementById('pubkey').value,
               "cert" : document.getElementById('certificate').value
            };
 
