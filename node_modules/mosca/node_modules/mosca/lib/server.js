@@ -33,7 +33,7 @@ var pino = require("pino");
 var extend = require("extend");
 var Client = require("./client");
 var Stats = require("./stats");
-var shortid = require("shortid");
+var nanoid = require("nanoid");
 var persistence = require('./persistence');
 var options = require('./options');
 var interfaces = require('./interfaces');
@@ -162,7 +162,7 @@ function Server(opts, callback) {
   this.onQoS2publish = this.modernOpts.onQoS2publish;
   
   // each Server has a dummy id for logging purposes
-  this.id = this.modernOpts.id || shortid.generate();
+  this.id = this.modernOpts.id || nanoid(7);
 
   // initialize servers list
   this.servers = [];
@@ -216,6 +216,12 @@ function Server(opts, callback) {
         var server = interfaces.serverFactory(iface, fallback, that);
         that.servers.push(server);
         server.maxConnections = iface.maxConnections || 10000000;
+        
+        // Catch listen errors
+        server.on('error', function (e) {
+          that.logger.error('Error starting Mosca Server');
+          that.emit('error', e);
+        });        
         server.listen(port, host, dn);
       }, done);
     },
@@ -635,5 +641,5 @@ Server.prototype.nextDedupId = function() {
 };
 
 Server.prototype.generateUniqueId = function() {
-  return shortid.generate();
+  return nanoid(7);
 };

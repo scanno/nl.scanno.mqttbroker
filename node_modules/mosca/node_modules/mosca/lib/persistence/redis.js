@@ -31,7 +31,7 @@ var util = require("util");
 var Matcher = require("./matcher");
 var steed = require("steed")();
 var extend = require("extend");
-var shortid = require("shortid");
+var nanoid = require("nanoid");
 var defaults = {
   channel: "$SYS/moscaSync",
   ttl: {
@@ -78,7 +78,7 @@ function RedisPersistence(options, callback) {
 
   this._client = this._buildClient();
   this._pubSubClient = this._buildClient();
-  this._id = shortid.generate();
+  this._id = nanoid(7);
 
   this._packetKeyTTL = this.options.ttl.packets;
   this._listKeyTTL = this._packetKeyTTL * 2; // list key should live longer than packet key
@@ -283,10 +283,9 @@ RedisPersistence.prototype.storeSubscriptions = function(client, cb) {
   var that = this;
   var subscriptions = {};
 
+  // Issue #693
   Object.keys(client.subscriptions).forEach(function(key) {
-    if (client.subscriptions[key].qos > 0) {
-      subscriptions[key] = client.subscriptions[key];
-    }
+    subscriptions[key] = client.subscriptions[key];
   });
 
   this._client.get(clientSubKey, function(err, currentSubs){
@@ -410,12 +409,14 @@ RedisPersistence.prototype.streamOfflinePackets = function(client, cb, done) {
   var that = this,
       listKey = "packets:" + client.id;
 
+  done = done || noop;
+
   that._client.lrange(listKey, 0, 10000, function(err, results) {
 
     var total = results.length;
 
     // for testing
-    if(done && total === 0)
+    if (done && total === 0)
       done();
 
     function emit(key, result) {
@@ -434,7 +435,7 @@ RedisPersistence.prototype.streamOfflinePackets = function(client, cb, done) {
     }
 
     results.reduce(fetch, that._client.multi()).exec(function(err,multiResults){
-      if(!multiResults && done) {
+      if(!multiResults) {
         done(err);
         return;
       }
@@ -528,6 +529,8 @@ RedisPersistence.prototype.close = function(done) {
 RedisPersistence.prototype._explicitlyClosed = function(done) {
   return this._closing || this._closed;
 };
+
+function noop() {}
 
 /**
  * Export it as a module

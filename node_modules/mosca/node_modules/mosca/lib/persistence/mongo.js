@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 "use strict";
 
 var AbstractPersistence = require("./abstract");
+var escape = require('escape-string-regexp');
 var mongo = require('mongodb');
 var MongoClient = mongo.MongoClient;
 var util = require("util");
@@ -183,9 +184,11 @@ MongoPersistence.prototype.storeSubscriptions = function(client, done) {
   var that = this;
 
   if (!client.clean) {
-    subscriptions = Object.keys(client.subscriptions).filter(function(key) {
-      return client.subscriptions[key].qos > 0;
-    });
+    // Issue #693
+    // subscriptions = Object.keys(client.subscriptions).filter(function(key) {
+    //   return client.subscriptions[key].qos > 0;
+    // });
+    subscriptions = Object.keys(client.subscriptions);
 
     steed.each(subscriptions, function(key, cb) {
       that._subscriptions.findAndModify({
@@ -265,7 +268,8 @@ MongoPersistence.prototype.storeRetained = function(packet, cb) {
 };
 
 MongoPersistence.prototype.lookupRetained = function(pattern, cb) {
-  var regexp = new RegExp(pattern.replace(/(#|\+)/, ".+").replace('\\', '\\\\'));
+  var actual = escape(pattern).replace(/(#|\\\+).*$/, '');
+  var regexp = new RegExp(actual);
   var stream = this._retained.find({ topic: { $regex: regexp } }).stream();
   var matched = [];
   var matcher = new Matcher();
