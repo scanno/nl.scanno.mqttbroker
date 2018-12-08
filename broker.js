@@ -93,8 +93,12 @@ class brokerMQTT {
       if (this.serverOnline == false && this.getConnectOptions() == true) {
          this.logmodule.writelog('info', "Starting broker...");
          this.logmodule.writelog('info', "brokerSettings: " + JSON.stringify(this.brokerSettings));
-         this.server = new mosca.Server(this.brokerSettings);
-         this.brokerEvents();
+         try {
+           this.server = new mosca.Server(this.brokerSettings);
+         } catch(err) {
+           ref.logmodule.writelog('error', "startBroker(): " +err);
+           this.brokerEvents();
+         }
       } else {
          if (this.serverOnline == true) {
             this.logmodule.writelog('info', "startBroker() was called, but broker is already running.");
