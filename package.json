@@ -1,6 +1,6 @@
 {
   "name": "nl.scanno.mqttbroker",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "description": "MQTT Broker",
   "main": "app.js",
   "dependencies": {
@@ -17,6 +17,8 @@
   "keywords": [
     "MQTT",
     "broker"
+    "server",
+    "messaging"
   ],
   "author": "Menno van Grinsven",
   "license": "ISC",
