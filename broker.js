@@ -131,10 +131,6 @@ class brokerMQTT {
    }
 
    isBrokerRunning() {
-/*      if (this.server !== null) {
-         return true;
-      }
-      return false;*/
       return this.serverOnline;
    }
 

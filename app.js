@@ -10,27 +10,7 @@ class MQTTBrokerApp extends Homey.App {
       this.logmodule = new logMQTT(this);
       this.globalVar = new globalVarMQTT(this);
       this.broker = new brokerMQTT(this);
-//      this.server = new mosca.Server(settings);
-//      this.Run();
    }
-
-/*   Run() {
-      this.server.on('clientConnected', function(client) {
-          this.logmodule.writelog('info', 'client connected: '+ client.id);
-      });
-
-
-      // fired when a message is received
-      this.server.on('published', function(packet, client) {
-        this.logmodule.writelog('info', 'Published '+ packet.payload);
-      });
-
-      this.server.on('ready', function() {
-         this.logmodule.writelog('info', 'Mosca server is up and running');
-      });
-
-      // fired when the mqtt server is ready
-   }*/
 
    changedSettings(args) {
       this.logmodule.writelog('info',"changedSettings called");
@@ -80,9 +60,7 @@ class MQTTBrokerApp extends Homey.App {
       this.logmodule.writelog('debug', JSON.stringify(args));
       const selfsigned = require("selfsigned/node_modules/selfsigned");
 
-//      var attrs = [{ name: 'commonName', value: '192.168.1.244' }];
       var attrs = [{ name: 'commonName', value: args.body.commonname }];
-//      var pems = selfsigned.generate(attrs, { days: 365 });
       var pems = selfsigned.generate(attrs, { days: args.body.daysvalid });
 
       return pems;
