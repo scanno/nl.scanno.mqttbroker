@@ -52,11 +52,19 @@ class brokerMQTT {
          var fs = require('fs');
          if (fs.existsSync(SECURE_PRIVATEKEY)) {
             this.logmodule.writelog('debug', "Key file found");
-            bKeyFileValid = true;
+            var privstats=fs.statSync(SECURE_PRIVATEKEY);
+            this.logmodule.writelog('debug', "PRIVKEY size = " + privstats.size);
+            if (privstats.size > 256){
+                bKeyFileValid = true;
+            }
          }
          if (fs.existsSync(SECURE_CERT)) {
             this.logmodule.writelog('debug', "Cert file found");
-            bCertFileValid = true;
+            var certstats = fs.statSync(SECURE_CERT);
+            this.logmodule.writelog('debug', "CERT size = " + certstats.size);
+            if (certstats.size > 256) {
+                bCertFileValid = true;
+            }
          }
          if (bKeyFileValid === true && bCertFileValid === true) {
             this.logmodule.writelog('debug', "TLS Config seems valid");
@@ -65,6 +73,12 @@ class brokerMQTT {
       }
 
       if ((bTLS === false || bAllowNonSecure === true) && iPort > 1000) {
+         // Check if we have a combined secure and non secure port. If we do, then the secure
+         // config should be valid.
+         if (bTLS === true && bConfigValid === false) {
+           this.logmodule.writelog('error', "broker: TLS config is not valid.");
+           return false;
+         }
          this.logmodule.writelog('debug', "PLAIN Config seems valid");
          bConfigValid = true;
       }
@@ -86,6 +100,7 @@ class brokerMQTT {
          }
          return true;
       }
+      this.logmodule.writelog('error', "broker: Config is not valid.");
       return false;
    }
 
