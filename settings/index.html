@@ -485,14 +485,20 @@
            });
         }
         function startBroker() {
-           HomeyAPI.api('POST', 'settings/startBroker/', null, function(err, result) {
+           HomeyAPI.api('POST', 'settings/startBroker/', {}, function(err, result) {
+             if (err) {
+               console.log(err);
+             }
               console.log("startBroker() called");
               isBrokerRunning();
            });
         }
 
         function stopBroker() {
-           HomeyAPI.api('POST', 'settings/stopBroker/', null, function(err, result) {
+           HomeyAPI.api('POST', 'settings/stopBroker/', {}, function(err, result) {
+             if (err) {
+               console.log(err);
+             }
               console.log("stopBroker() called");
               isBrokerRunning();
            });

@@ -66,6 +66,7 @@ module.exports = [{
    requires_authorization: true,
    role: 'owner',
    fn: function(args, callback) {
+     console.log("API: Incoming POST on /settings/startBroker/");
       var result = Homey.app.startBroker(args);
       if( result instanceof Error ) return callback( result );
       return callback( null, result );
@@ -78,6 +79,7 @@ module.exports = [{
    requires_authorization: true,
    role: 'owner',
    fn: function(args, callback) {
+     console.log("API: Incoming POST on /settings/stopBroker/");
       var result = Homey.app.stopBroker(args);
       if( result instanceof Error ) return callback( result );
       return callback( null, result );
