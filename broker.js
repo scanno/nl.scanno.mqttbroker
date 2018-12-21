@@ -97,7 +97,7 @@ class brokerMQTT {
            this.server = new mosca.Server(this.brokerSettings);
            this.brokerEvents();
          } catch(err) {
-           ref.logmodule.writelog('error', "startBroker(): " +err);
+           this.logmodule.writelog('error', "startBroker(): " +err);
          }
       } else {
          if (this.serverOnline == true) {
