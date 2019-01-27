@@ -18,7 +18,7 @@
              "enable_debug_log": "DEBUG logging aanzetten"
           },
           "button" : {
-             "save" : "Opslaan",
+             "save" : "Opslaan Instellingen",
              "getlogs" : "Log ophalen",
              "purgedata": "Verwijder gegevens",
              "userArray": "Wijzig gebruikers",

@@ -76,16 +76,24 @@
 
         </fieldset>
 
-
         </form>
 
         <div>
-        <button type="button" class="right" id="button_getlog" onclick="showLogLines()" data-i18n="settings.app.button.getlogs">Get Logs</button>
-        <button type="button" class="right" id="button_save" onclick="save()" data-i18n="settings.app.button.save">Save</button>
+          <button type="button" class="left" id="button_save" onclick="save()" data-i18n="settings.app.button.save">Save</button>
         </div>
-
-        <p data-i18n="settings.app.log.title"></p>
-        <div id="loglines"></div>
+        <br/>
+        <br/>
+        <form>
+          <fieldset>
+            <legend>
+                <label data-i18n="settings.app.log.title"></label>
+            </legend>
+            <div id="loglines"></div>
+          </fieldset>
+        </form>
+        <div>
+          <button type="button" class="right" id="button_getlog" onclick="showLogLines()" data-i18n="settings.app.button.getlogs">Get Logs</button>
+        </div>
 
         <script type="text/javascript">
 

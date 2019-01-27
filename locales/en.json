@@ -18,7 +18,7 @@
              "enable_debug_log": "Enable DEBUG logging"
          },
          "button" : {
-            "save" : "Save",
+            "save" : "Save Settings",
             "getlogs" : "Get logs",
             "purgedata": "Delete Data",
             "userArray": "Edit users",
