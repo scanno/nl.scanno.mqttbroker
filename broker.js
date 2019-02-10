@@ -47,7 +47,7 @@ class brokerMQTT {
       }
 
       // Check if key and certificate files are created
-      if (bTLS === true && iPortTLS > 1000) {
+      if (bTLS === true && iPortTLS > 1000 && iPortTLS !== iPort) {
          this.logmodule.writelog('debug', "Check if key and cert PEM files are available");
          var fs = require('fs');
          if (fs.existsSync(SECURE_PRIVATEKEY)) {
