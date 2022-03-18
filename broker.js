@@ -1,5 +1,5 @@
 
-const mosca     = require('mosca/node_modules/mosca');
+const mosca     = require('mosca');
 var hashpwd = require("./hashpwd.js");
 var globalVar1  = null;
 var logmodule1 = null;

@@ -58,7 +58,7 @@ class MQTTBrokerApp extends Homey.App {
    generateSelfSignedCerts(args) {
       this.logmodule.writelog('debug', "generateSelfSignedCerts called in app.js");
       this.logmodule.writelog('debug', JSON.stringify(args));
-      const selfsigned = require("selfsigned/node_modules/selfsigned");
+      const selfsigned = require("selfsigned");
 
       var attrs = [{ name: 'commonName', value: args.body.commonname }];
       var pems = selfsigned.generate(attrs, { days: args.body.daysvalid });
