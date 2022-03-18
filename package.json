@@ -4,7 +4,8 @@
   "description": "MQTT Broker",
   "main": "app.js",
   "dependencies": {
-    "mosca": "^2.5.2",
+    "jsonschema": "1.2.6",
+    "mosca": "^2.8.3",
     "selfsigned": "^2.0.0"
   },
   "devDependencies": {},
