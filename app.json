@@ -36,5 +36,6 @@
    "images":{
       "large":"./assets/images/large.jpg",
       "small":"./assets/images/small.jpg"
-   }
+   },
+   "brandColor": "#1BCACA"
 }
