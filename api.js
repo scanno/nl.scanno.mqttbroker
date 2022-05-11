@@ -7,9 +7,9 @@ module.exports = [{
    requires_authorization: true,
    role: 'owner',
    fn: function(args, callback) {
-      console.log("API: Incoming POST on /settings/settingschange/");
+      console.log("API: Incoming POST on /test/settingschange/");
       var result = Homey.app.changedSettings(args);
-      if( result instanceof Error ) callback( result );
+      //if( result instanceof Error ) callback( result );
       callback( null, result );
    }
 },

@@ -17,9 +17,15 @@ class MQTTBrokerApp extends Homey.App {
       this.logmodule.writelog('debug', args.body);
       this.logmodule.setDebugState();
 
-      // restart broker to listen on different port number
-      this.broker.restartBroker();
-      return true;
+      this.broker.stopBroker();
+
+      if (this.broker.getConnectOptions()) {
+         this.logmodule.writelog('info',"Settings checked OK");
+         // restart broker to listen on different port number
+         this.broker.startBroker();
+         return true;
+      }
+      return false;
    }
 
    getLogLines() {

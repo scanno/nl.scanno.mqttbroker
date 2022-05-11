@@ -53,7 +53,8 @@
             "unable_set_settings" : "There was an error trying to apply the settings.",
             "settings_saved" : "Settings saved",
             "settings_noSettingsChanged" : "No setting has been changed",
-            "settings_unexpectedError" : "Unexpected error occured. Please try again"
+            "settings_unexpectedError" : "Unexpected error occured. Please try again",
+            "settings_config_error" : "The configuration is incorrect. Check the configuation (port numbers, certificates)."
          }
       }
    }

@@ -36,12 +36,14 @@ class brokerMQTT {
       var bConfigValid = false;
       var bTLS = false;
       var bAllowNonSecure = false;
-      var iPort = parseInt(this.Homey.ManagerSettings.get('ip_port'), 10);
-      var iPortTLS = parseInt(this.Homey.ManagerSettings.get('ip_port_tls'), 10);
+      var iPort = parseInt(this.Homey.ManagerSettings.get('ip_port'));
+      var iPortTLS = parseInt(this.Homey.ManagerSettings.get('ip_port_tls'));
       var bKeyFileValid = false;
       var bCertFileValid = false;
 
       this.brokerSettings = {};
+      this.brokerSettings.secure = {};
+      this.brokerSettings.secure.enabled = false;
       this.certificate = {};
 
       if (this.Homey.ManagerSettings.get('tls') == true) {
@@ -93,17 +95,15 @@ class brokerMQTT {
       // Create the config struct
       if (bConfigValid === true) {
          if (bTLS === true) {
-            this.brokerSettings.secure = {};
+            this.brokerSettings.secure.enabled = true;
             this.brokerSettings.secure.port = iPortTLS;
-            this.brokerSettings.secure.keyPath = SECURE_PRIVATEKEY;
-            this.brokerSettings.secure.certPath = SECURE_CERT;
          }
          if (bTLS === false || bAllowNonSecure === true) {
-           this.brokerSettings.port = iPort;
-           if (bAllowNonSecure === true) {
-             // add allowNonSecure here when both http and https should be allowed
-             this.brokerSettings.allowNonSecure = true;
-           }
+            this.brokerSettings.port = iPort;
+            if (bAllowNonSecure === true) {
+               // add allowNonSecure here when both http and https should be allowed
+               this.brokerSettings.allowNonSecure = true;
+            }
          }
          return true;
       }
@@ -125,22 +125,21 @@ class brokerMQTT {
             aedes = require('aedes') ();
             aedes.persistance = db;
             aedes.authenticate = this.authUser;
-           //aedes.authorizePublish = this.authPublish;
-           //aedes.authorizeSubscribe = this.authSubscribe;
             this.brokerEvents();
-            this.server = require('net').createServer(aedes.handle);
-            this.serverTLS = require('tls').createServer(this.certificate, aedes.handle);
-
-            this.server.listen(1883, function() {
-               ref.logmodule.writelog('info', 'Aedes MQTT server is up and running');
-               ref.serverOnline = true;
-            });
-
-            this.serverTLS.listen(8883, function() {
-               ref.logmodule.writelog('info', 'Aedes MQTTS server is up and running');
-               ref.serverOnline = true;
-            });
-
+            if (this.brokerSettings.secure.enabled) {
+               this.serverTLS = require('tls').createServer(this.certificate, aedes.handle);
+               this.serverTLS.listen(this.brokerSettings.secure.port, function() {
+                  ref.logmodule.writelog('info', 'Aedes MQTTS server is up and running');
+                  ref.serverOnline = true;
+               });
+            }
+            if (this.brokerSettings.allowNonSecure || !this.brokerSettings.secure.enabled) {
+               this.server = require('net').createServer(aedes.handle);
+               this.server.listen(this.brokerSettings.port, function() {
+                  ref.logmodule.writelog('info', 'Aedes MQTT server is up and running');
+                  ref.serverOnline = true;
+               });
+            }
          } catch(err) {
            this.logmodule.writelog('error', "startBroker(): " +err);
          }
@@ -154,8 +153,15 @@ class brokerMQTT {
    stopBroker() {
       var ref = this;
       if (this.serverOnline !== false) {
-         ref.server.close();
-         ref.serverTLS.close();
+         if (this.brokerSettings.allowNonSecure || !this.brokerSettings.secure.enabled) {
+            ref.server.close();
+            ref.logmodule.writelog('info', 'Aedes MQTT server is stopped');
+         }
+         
+         if (this.brokerSettings.secure.enabled) {
+            ref.serverTLS.close();
+            ref.logmodule.writelog('info', 'Aedes MQTTS server is stopped');
+         }
          aedes.close();
       }
    }
@@ -164,8 +170,14 @@ class brokerMQTT {
       var ref = this;
       this.logmodule.writelog('info', "Restarting broker...");
       if (this.serverOnline === true) {
-         ref.server.close();
-         ref.serverTLS.close();
+         if (this.brokerSettings.allowNonSecure || !this.brokerSettings.secure.enabled) {
+            ref.server.close();
+            ref.logmodule.writelog('info', 'Aedes MQTT server is stopped');
+         }
+         if (this.brokerSettings.secure.enabled) {
+            ref.serverTLS.close();
+            ref.logmodule.writelog('info', 'Aedes MQTTS server is stopped');
+         }
          aedes.close();
          ref.serverRestart = true;
       } else {

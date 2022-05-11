@@ -232,7 +232,7 @@
             }
 
             if (valuesHaveBeenChanged == true) {
-                notifySettings(oldValues);
+                notifySettings(currentValues);
                 HomeyAPI.alert(__('settings.app.messages.settings_saved'));
             } else {
                 HomeyAPI.alert(__('settings.app.messages.settings_noSettingsChanged'));
@@ -247,6 +247,9 @@
         function notifySettings(values) {
              HomeyAPI.api('POST', 'test/settingschange/', values, function(err, result) {
                 if (!err) {
+                   if (!result) {
+                     Homey.alert(__('settings.app.messages.settings_config_error'));
+                   }
                     console.log("Settings change succesfull");
                 } else {
                     // Oeps, something went wrong here
