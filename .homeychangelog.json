@@ -1,0 +1,5 @@
+{
+  "2.0.0": {
+    "en": "Replaced the depricated Mosca MQTT broker library with Aedes"
+  }
+}

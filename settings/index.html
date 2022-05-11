@@ -111,16 +111,17 @@
                     document.getElementById('ip_port').value = ip_port;
                     currentValues.ip_port = ip_port;
                   }
+                  if (typeof ip_port == 'undefined' || ip_port == null) ip_port = 1883;
            })
            Homey.get('tls', function(err, tls) {
                   if (err) {
                     console.error(err)
                   } else {
                     document.getElementById('tls').value = tls;
+                    currentValues.tls = tls;
                   }
                   if (typeof tls == 'undefined' || tls == null) tls = false;
                   document.getElementById('tls').checked = tls;
-                  currentValues.tls = tls;
            })
            Homey.get('ip_port_tls', function(err, ip_port_tls) {
                   if (err) {
@@ -129,16 +130,17 @@
                     document.getElementById('ip_port_tls').value = ip_port_tls;
                     currentValues.ip_port_tls = ip_port_tls;
                   }
+                  if (typeof ip_port_tls == 'undefined' || ip_port_tls == null) ip_port_tls = 8883;
            })
            Homey.get('allow_nonsecure', function(err, allow_nonsecure) {
                   if (err) {
                     console.error(err)
                   } else {
                     document.getElementById('allow_nonsecure').value = allow_nonsecure;
+                    currentValues.allow_nonsecure = allow_nonsecure;
                   }
                   if (typeof allow_nonsecure == 'undefined' || allow_nonsecure == null) allow_nonsecure = false;
                   document.getElementById('allow_nonsecure').checked = allow_nonsecure;
-                  currentValues.allow_nonsecure = allow_nonsecure;
            })
 
            Homey.get('disable_auth', function(err, disable_auth) {
@@ -146,30 +148,30 @@
                     console.error(err)
                   } else {
                     document.getElementById('disable_auth').value = disable_auth;
+                    currentValues.disable_auth = disable_auth;
                   }
                   if (typeof disable_auth == 'undefined' || disable_auth == null) disable_auth = false;
                   document.getElementById('disable_auth').checked = disable_auth;
-                  currentValues.disable_auth = disable_auth;
            })
            Homey.get('disable_hashing', function(err, disable_hashing) {
                   if (err) {
                     console.error(err)
                   } else {
                     document.getElementById('disable_hashing').value = disable_hashing;
+                    currentValues.disable_hashing = disable_hashing;
                   }
                   if (typeof disable_hashing == 'undefined' || disable_hashing == null) disable_hashing = false;
                   document.getElementById('disable_hashing').checked = disable_hashing;
-                  currentValues.disable_hashing = disable_hashing;
            })
            Homey.get('set_debug', function(err, set_debug) {
                   if (err) {
                     console.error(err)
                   } else {
                     document.getElementById('set_debug').value = set_debug;
+                    currentValues.set_debug = set_debug;
                   }
                   if (typeof set_debug == 'undefined' || set_debug == null) set_debug = false;
                   document.getElementById('set_debug').checked = set_debug;
-                  currentValues.set_debug = set_debug;
            })
 
            Homey.ready();
