@@ -224,6 +224,11 @@ class brokerMQTT {
          }
       });
 
+      aedes.on('uncaughtException', function(err) {
+         if (err.errno === 'EADDRINUSE') {
+            ref.logmodule.writelog('info', 'The port is already in use');
+         }
+      });
    }
 
    // Accepts the connection if the username and password are valid
