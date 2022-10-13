@@ -18,7 +18,8 @@ function hashPassword(password, salt) {
      salt = crypto.randomBytes(256);
   } else {
      if(typeof salt === 'string') {
-			   	salt = new Buffer(salt, 'hex');
+			   	//salt = new Buffer(salt, 'hex');
+           salt = Buffer.from(salt, 'hex');
   		 }
 	 }
   const key = crypto.pbkdf2Sync(password, salt, iterations, 64, 'sha1');
