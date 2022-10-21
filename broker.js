@@ -23,8 +23,9 @@ class brokerMQTT {
       this.serverTLS = null;
       this.serverOnline = false;
       this.serverRestart = false;
-      this.Homey = require('homey');
-      globHomey = this.Homey;
+      //this.Homey = require('homey');
+      this.Homey = app.homey;
+      globHomey = app.homey;
       this.OnInit();
    }
 
@@ -36,8 +37,8 @@ class brokerMQTT {
       var bConfigValid = false;
       var bTLS = false;
       var bAllowNonSecure = false;
-      var iPort = parseInt(this.Homey.ManagerSettings.get('ip_port'));
-      var iPortTLS = parseInt(this.Homey.ManagerSettings.get('ip_port_tls'));
+      var iPort = parseInt(this.Homey.settings.get('ip_port'));
+      var iPortTLS = parseInt(this.Homey.settings.get('ip_port_tls'));
       var bKeyFileValid = false;
       var bCertFileValid = false;
 
@@ -46,10 +47,10 @@ class brokerMQTT {
       this.brokerSettings.secure.enabled = false;
       this.certificate = {};
 
-      if (this.Homey.ManagerSettings.get('tls') == true) {
+      if (this.Homey.settings.get('tls') == true) {
          bTLS = true;
       }
-      if (this.Homey.ManagerSettings.get('allow_nonsecure') == true) {
+      if (this.Homey.settings.get('allow_nonsecure') == true) {
         bAllowNonSecure = true;
       }
 
@@ -234,13 +235,13 @@ class brokerMQTT {
    // Accepts the connection if the username and password are valid
    authUser(client, username, password, callback) {
       logmodule1.writelog('info',"User authentication for user " + username);
-      if (globHomey.ManagerSettings.get('disable_auth') == false) {
+      if (globHomey.settings.get('disable_auth') == false) {
          if (username !== null) {
             var userCheck = globalVar1.getUser(username);
             if (userCheck !== null) {
                var authorized = false;
                if (username === userCheck.userName) {
-                 if (globHomey.ManagerSettings.get('disable_hashing') == false) {
+                 if (globHomey.settings.get('disable_hashing') == false) {
                      if (hashpwd.machPasswords(password, globalVar1.getUser(username).userPassword)) {
                         authorized = true;
                         logmodule1.writelog('info', 'User '+username+' has been succesfully authenticated');

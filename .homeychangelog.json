@@ -1,5 +1,5 @@
 {
-  "2.0.0": {
-    "en": "Replaced the depricated Mosca MQTT broker library with Aedes"
+  "3.0.0": {
+    "en": "Updated to SDK version to 3 and Aedes 0.48.0. Solved deprication warning regarding the usage of Buffer(). "
   }
 }

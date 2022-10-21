@@ -7,14 +7,15 @@ const logMQTT       = require("./logmodule.js");
 
 class MQTTBrokerApp extends Homey.App {
    onInit() {
+      this.Homey = Homey;
       this.logmodule = new logMQTT(this);
       this.globalVar = new globalVarMQTT(this);
       this.broker = new brokerMQTT(this);
    }
 
-   changedSettings(args) {
+   changedSettings(body) {
       this.logmodule.writelog('info',"changedSettings called");
-      this.logmodule.writelog('debug', args.body);
+      this.logmodule.writelog('debug', body);
       this.logmodule.setDebugState();
 
       this.broker.stopBroker();
@@ -61,18 +62,18 @@ class MQTTBrokerApp extends Homey.App {
       return this.broker.isBrokerRunning();
    }
 
-   generateSelfSignedCerts(args) {
+   generateSelfSignedCerts(body) {
       this.logmodule.writelog('debug', "generateSelfSignedCerts called in app.js");
-      this.logmodule.writelog('debug', JSON.stringify(args));
+      this.logmodule.writelog('debug', JSON.stringify(body));
       const selfsigned = require("selfsigned");
 
-      var attrs = [{ name: 'commonName', value: args.body.commonname }];
-      var pems = selfsigned.generate(attrs, { days: args.body.daysvalid });
+      var attrs = [{ name: 'commonName', value: body.commonname }];
+      var pems = selfsigned.generate(attrs, { days: body.daysvalid });
 
       return pems;
    }
    saveX509Certs(args) {
-      this.broker.writeX509Data(args.body);
+      this.broker.writeX509Data(args);
    }
 
    readX509Certs() {

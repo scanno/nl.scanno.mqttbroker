@@ -9,7 +9,7 @@
       "nl": "Een MQTT Broker for Homey"
    },
    "version": "3.0.0",
-   "sdk": 2,
+   "sdk": 3,
    "compatibility": ">=5.0.0",
    "category": [
       "internet"
@@ -37,5 +37,63 @@
       "large":"./assets/images/large.png",
       "small":"./assets/images/small.png"
    },
-   "brandColor": "#1BCACA"
+   "brandColor": "#1BCACA",
+   "api": {
+      "updateSettings": {
+         "method": "post",
+         "path": "/test/settingschange/"
+       },
+       "getUserArray": {
+         "method": "get",
+         "path": "/settings/getUserArray/"
+       },
+       "purgeUserData": {
+         "method": "get",
+         "path": "/settings/purgeUserData/"
+       },
+       "addNewUser": {
+         "method": "post",
+         "path": "/settings/addNewUser/"
+       },
+       "deleteUser": {
+         "method": "post",
+         "path": "/settings/deleteUser/"
+       },
+       "startBroker": {
+         "method": "post",
+         "path": "/settings/startBroker/"
+       },
+       "stopBroker": {
+         "method": "post",
+         "path": "/settings/stopBroker/"
+       },
+       "isBrokerRunning": {
+         "method": "get",
+         "path": "/settings/isBrokerRunning/"
+       },
+       "generateSelfSignedCerts": {
+         "method": "post",
+         "path": "/settings/generateSelfSignedCerts/"
+       },
+       "saveX509Certs": {
+         "method": "post",
+         "path": "/settings/saveX509Certs/"
+       },
+       "readX509Certs": {
+         "method": "get",
+         "path": "/settings/readX509Certs/"
+       },
+       "getloglines": {
+         "method": "get",
+         "path": "/settings/getloglines/"
+       },
+       "info": {
+         "method": "get",
+         "path": "/app2app/info/"
+       },
+       "user": {
+         "method": "put",
+         "path": "/app2app/user/"
+       }
+   }
 }

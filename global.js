@@ -7,7 +7,8 @@ class globalVars {
    constructor(app) {
       this.userArray = [];
 
-      this.Homey     = require("homey");
+      //this.Homey     = require("homey");
+      this.Homey = app.homey;
       this.logmodule = app.logmodule;
 
       this.OnInit();
@@ -110,7 +111,7 @@ class globalVars {
             // User has not been found, so assume this is a new user
             ref.userArray.push(userData);
 
-            ref.Homey.ManagerNotifications.registerNotification({
+            ref.Homey.notifications.registerNotification({
                excerpt: ref.Homey.__("notifications.user_added", {"name": userData.userName})
             }, function( err, notification ) {
                if( err ) return console.error( err );
@@ -139,7 +140,7 @@ class globalVars {
       try {
          var newUser = {};
          newUser.userName = userName;
-         if (this.Homey.ManagerSettings.get('disable_hashing') == false ) {
+         if (this.Homey.settings.get('disable_hashing') == false ) {
             newUser.userPassword = this.hashedPassword(userPassword);
          } else {
            newUser.userPassword = userPassword;
@@ -155,22 +156,22 @@ class globalVars {
       addNewUser is called from the settings page when a new user is added
       or when the token needs to be refreshed.
    */
-   addNewUser(args) {
+   addNewUser(body) {
       const ref = this;
       try {
-         ref.logmodule.writelog('debug', "New user called: "+ args.body.userName);
-         if (args.body.userName !== null && args.body.userName !== undefined && args.body.userName !== "" ) {
-            var currentUser = ref.getUser(args.body.userName);
+         ref.logmodule.writelog('debug', "New user called: "+ body.userName);
+         if (body.userName !== null && body.userName !== undefined && body.userName !== "" ) {
+            var currentUser = ref.getUser(body.userName);
             if (currentUser == null) {
-               var newUser = ref.createEmptyUser(args.body.userName, args.body.userPassword);
+               var newUser = ref.createEmptyUser(body.userName, body.userPassword);
                ref.setUser(newUser, true);
                ref.logmodule.writelog('info', "New user added: "+ newUser.userName);
               return true;
             } else {
-               if (this.Homey.ManagerSettings.get('disable_hashing') == false ) {
-                 currentUser.userPassword = this.hashedPassword(args.body.userPassword);
+               if (this.homey.settings.get('disable_hashing') == false ) {
+                 currentUser.userPassword = this.hashedPassword(body.userPassword);
                } else {
-                 currentUser.userPassword = args.body.userPassword;
+                 currentUser.userPassword = body.userPassword;
                }
                ref.logmodule.writelog('debug', "userPassword: " + currentUser.userPassword);
                ref.saveUserData();
@@ -187,13 +188,13 @@ class globalVars {
       deleteUser is called from the settings page when a user is deleted
       by pressing the - button
    */
-   deleteUser(args) {
+   deleteUser(body) {
       const ref = this;
       try {
-         ref.logmodule.writelog('debug', "Delete user called: "+ args.body.userName);
+         ref.logmodule.writelog('debug', "Delete user called: "+ body.userName);
          var result = false;
          for (var i=0; i < ref.userArray.length; i++) {
-            if (ref.userArray[i].userName === args.body.userName) {
+            if (ref.userArray[i].userName === body.userName) {
                var deletedUser = ref.userArray.splice(i, 1);
                ref.logmodule.writelog('info', "Deleted user: " + deletedUser.userName);
                result = true;

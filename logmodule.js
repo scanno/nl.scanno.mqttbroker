@@ -1,8 +1,7 @@
-
 class Logger {
   constructor(app) {
     this.logArray = [];
-    this.Homey = require('homey');
+    this.Homey = app.homey;
     this.DEBUG = false;
     this.OnInit();
   }
@@ -12,7 +11,7 @@ class Logger {
   }
 
   setDebugState() {
-    if (this.Homey.ManagerSettings.get('set_debug') == true) {
+    if (this.Homey.settings.get('set_debug') == true) {
       this.DEBUG = true;
     } else {
       this.DEBUG = false;
@@ -44,7 +43,7 @@ class Logger {
   writelog(level, line) {
      switch(level) {
         case 'error':
-           this.Homey.ManagerNotifications.registerNotification({
+           this.Homey.notifications.registerNotification({
               excerpt: line
            }, function( err, notification ) {
               if( err ) return console.error( err );
