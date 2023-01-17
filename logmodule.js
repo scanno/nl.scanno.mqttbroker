@@ -42,15 +42,14 @@ class Logger {
 
   writelog(level, line) {
      switch(level) {
-//        case 'error':
-//           this.Homey.notifications.registerNotification({
-//              excerpt: line
-//           }, function( err, notification ) {
-//              if( err ) return console.error( err );
-//           });
+        case 'error':
+           this.Homey.notifications.createNotification({
+              excerpt: line
+           }, function( err, notification ) {
+              if( err ) return console.error( err );
+           });
         case 'debug':
            if (this.DEBUG == false) break;
-	case 'error':
         case 'info':
            var logLine = this.getDateTime() + "   " + line;
            console.log( logLine );

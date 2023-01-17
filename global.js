@@ -111,15 +111,16 @@ class globalVars {
             // User has not been found, so assume this is a new user
             ref.userArray.push(userData);
 
-            ref.Homey.notifications.registerNotification({
+            if (persistUser == true) {
+               ref.saveUserData();
+            }
+   
+            ref.Homey.notifications.createNotification({
                excerpt: ref.Homey.__("notifications.user_added", {"name": userData.userName})
             }, function( err, notification ) {
                if( err ) return console.error( err );
                   console.log( 'Notification added' );
             });
-         }
-         if (persistUser == true) {
-            ref.saveUserData();
          }
       } catch(err) {
          ref.logmodule.writelog('error', "setUser: " +err);

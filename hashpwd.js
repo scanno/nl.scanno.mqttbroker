@@ -1,7 +1,6 @@
 'use strict';
 
 var crypto = require('crypto');
-//var logmodule = require('./logmodule.js');
 var iterations = 10000;
 
 module.exports = {

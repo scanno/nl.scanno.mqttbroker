@@ -1,5 +1,11 @@
 {
   "3.0.0": {
     "en": "Updated to SDK version to 3 and Aedes 0.48.0. Solved deprication warning regarding the usage of Buffer(). "
+  },
+  "3.0.1": {
+    "en": "Fix crash in error logging"
+  },
+  "3.0.2": {
+    "en": "Updated Aedes to 0.48.1"
   }
 }
