@@ -53,7 +53,8 @@
              "settings_saved" : "Instellingen opgeslagen",
              "settings_noSettingsChanged" : "Er zijn geen instellingen aangepast.",
              "settings_unexpectedError" : "Er is een onverwachte fout opgetreden, probeer het nog eens.",
-             "settings_config_error" : "De configuratie is niet correct. Controleer de configuratie (poort nummers, certificaten)."
+             "settings_config_error" : "De configuratie is niet correct. Controleer de configuratie (poort nummers, certificaten).",
+             "purgeUserData" : "Weet je zeker dat je alle gebruikersgegevens (gebruikers en certificaten) wilt verwijderen?"
           }
       }
    }

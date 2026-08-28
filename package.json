@@ -1,12 +1,12 @@
 {
   "name": "nl.scanno.mqttbroker",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "description": "MQTT Broker",
   "main": "app.js",
   "dependencies": {
-    "aedes": "^0.48.1",
+    "aedes": "^0.51.2",
     "aedes-persistence-nedb": "^2.0.3",
-    "selfsigned": "^2.1.1"
+    "selfsigned": "^2.4.1"
   },
   "devDependencies": {},
   "scripts": {

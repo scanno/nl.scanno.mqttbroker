@@ -6,6 +6,12 @@
     "en": "Fix crash in error logging"
   },
   "3.0.2": {
-    "en": "Updated Aedes to 0.48.1"
+    "en": "Updated Aedes to 0.48.1, fix persisting new user"
+  },
+  "3.0.3": {
+    "en": "Added purging of user data"
+  },
+  "3.0.4": {
+    "en": "Updated aedes to 0.51.2"
   }
 }

@@ -100,6 +100,7 @@
         var currentValues = {};
         var HomeyAPI = null;
         var ShowSelfSigned = false;
+        var curSettingsTab = "";
 
         function onHomeyReady(Homey){
            HomeyAPI = Homey;
@@ -264,6 +265,7 @@
         */
         function createUserTable() {
            // Delete / clear dynamicTable
+           curSettingsTab = "user";
            var dynamic = document.getElementById("dynamicTable");
            document.getElementById("dynamicTable").style.width = "";
            var dynamicRows = dynamic.rows.length;
@@ -370,6 +372,7 @@
         /////////////////////////////////////////////////////////
         // Section for session settings
         function createSessionSettings() {
+           curSettingsTab = "session";
            var table = document.getElementById("userTable");
            var dynamic = document.getElementById("dynamicTable");
            document.getElementById("userTable").style.width = "";
@@ -486,6 +489,27 @@
         // End section for session settings
         ////////////////////////////////////////////////////////
 
+      function purgeUserData() {
+         console.log("purgeUserData() called");
+         HomeyAPI.confirm( HomeyAPI.__('settings.app.messages.purgeUserData'), 'warning', function(err, result) {
+            console.log("Result confirm dialog "+result);
+            if (result == true) {
+               HomeyAPI.api('GET', 'settings/purgeUserData/', function(err, result) {
+                  if (!err) {
+                     switch (curSettingsTab) {
+                        case "user":
+                           createUserTable();
+                           break;
+                        case "session":
+                           createSessionSettings();
+                           break;
+                     };
+                  };
+               });
+            }
+         });
+      }
+
         function showLogLines() {
            HomeyAPI.api('GET', 'settings/getloglines/', function(err, result) {
               if (!err) {
@@ -528,8 +552,6 @@
               };
            });
         }
-
         </script>
-
     </body>
 </html>

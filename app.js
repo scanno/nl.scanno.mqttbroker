@@ -41,7 +41,8 @@ class MQTTBrokerApp extends Homey.App {
    }
 
    purgeUserData(args) {
-      return this.globalVar.purgeUserData(args);
+      this.logmodule.writelog('info',"purgeUserData called");
+      return this.globalVar.deletePresistancyFiles();
    }
    /*
       getUserArray: Getter for returning the user array to settings.

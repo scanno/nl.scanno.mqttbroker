@@ -28,19 +28,18 @@ class globalVars {
       const ref = this;
 
       this.logmodule.writelog('debug', "initVars called");
-
-      require('fs').readFile('/userdata/broker-users.json', 'utf8', function (err, data) {
-         if (err) {
-            ref.logmodule.writelog('error', "Retreiving broker data failed: "+ err);
-         } else {
-            try {
-                ref.userArray = JSON.parse(data);
-            } catch (err) {
-               ref.logmodule.writelog('error', "Parsing broker data failed: "+ err);
-               ref.userArray = [];
+      try {
+         require('fs').readFile('/userdata/broker-users.json', 'utf8', function (err, data) {
+            if (err) {
+               ref.logmodule.writelog('error', "Retreiving broker data failed: "+ err);
+            } else {
+               ref.userArray = JSON.parse(data);
             }
-         }
-      });
+         });
+      } catch (err) {
+         ref.logmodule.writelog('error', "Parsing broker data failed: "+ err);
+         ref.userArray = [];
+      }
    }
 
    /*
@@ -61,14 +60,16 @@ class globalVars {
       can be used when the persistency files were borked.
    */
    deletePresistancyFiles() {
+      this.logmodule.writelog('info', "deletePresistancyFiles called");
       const ref = this;
-      var returnValue = false;
+      var returnValue = true;
 
       try {
          require('fs').unlinkSync('/userdata/broker-users.json');
+         ref.userArray = [];
       } catch(err) {
             ref.logmodule.writelog('error', err);
-            returnValue = true;
+            return err;
       }
 
       return returnValue;
